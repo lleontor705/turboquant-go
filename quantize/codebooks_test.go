@@ -16,7 +16,10 @@ func TestBetaPDF_Normalization(t *testing.T) {
 	dims := []int{64, 256, 768}
 	for _, d := range dims {
 		t.Run(fmt.Sprintf("d=%d", d), func(t *testing.T) {
-			pdf := BetaPDF(d)
+			pdf, err := BetaPDF(d)
+			if err != nil {
+				t.Fatalf("BetaPDF(%d): %v", d, err)
+			}
 
 			// Trapezoidal integration over [-1, 1].
 			const n = 10000
@@ -49,7 +52,10 @@ func TestBetaPDF_Symmetry(t *testing.T) {
 
 	for _, d := range dims {
 		d := d
-		pdf := BetaPDF(d)
+		pdf, err := BetaPDF(d)
+		if err != nil {
+			t.Fatalf("BetaPDF(%d): %v", d, err)
+		}
 		for _, x := range testX {
 			fx := pdf(x)
 			fnegX := pdf(-x)
@@ -65,20 +71,21 @@ func TestBetaPDF_Symmetry(t *testing.T) {
 func TestBetaPDF_SmallDim(t *testing.T) {
 	t.Run("d=3_uniform", func(t *testing.T) {
 		// For d=3, exponent = 0, so f(x) = constant = 0.5 for x ∈ (-1, 1).
-		pdf := BetaPDF(3)
+		pdf, err := BetaPDF(3)
+		if err != nil {
+			t.Fatalf("BetaPDF(3): %v", err)
+		}
 		mid := pdf(0.0)
 		if math.Abs(mid-0.5) > 1e-10 {
 			t.Errorf("BetaPDF(3)(0) = %.10f, want 0.5", mid)
 		}
 	})
 
-	t.Run("d=2_panics", func(t *testing.T) {
-		defer func() {
-			if r := recover(); r == nil {
-				t.Error("expected panic for BetaPDF(1)")
-			}
-		}()
-		BetaPDF(1)
+	t.Run("d=1_error", func(t *testing.T) {
+		_, err := BetaPDF(1)
+		if err == nil {
+			t.Error("expected error for BetaPDF(1)")
+		}
 	})
 }
 

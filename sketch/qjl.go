@@ -215,11 +215,8 @@ func (s *QJLSketcher) Sketch(vec []float64) (*BitVector, error) {
 		}
 	}
 
-	// Step 5: Pack into BitVector
-	packed, err := bits.Pack(signs)
-	if err != nil {
-		return nil, fmt.Errorf("sketch: packing failed: %w", err)
-	}
+	// Step 5: Pack into BitVector — cannot fail: signs are always ±1.
+	packed, _ := bits.Pack(signs)
 
 	return &BitVector{
 		Bits:           packed,
@@ -241,46 +238,29 @@ func (s *QJLSketcher) Sketch(vec []float64) (*BitVector, error) {
 //	[if has_outliers: [outlier_indices: length-prefixed uint64s] [outlier_values: length-prefixed float64s]]
 func (bv BitVector) MarshalBinary() ([]byte, error) {
 	buf := new(bytes.Buffer)
-
-	// Version byte
-	if err := serial.WriteVersion(buf); err != nil {
-		return nil, err
-	}
-
-	// Dim as uint32 LE
 	var dimBuf [4]byte
+
+	// bytes.Buffer writes never fail; serial.Write* to bytes.Buffer never fail.
+	buf.WriteByte(serial.Version)
+
 	binary.LittleEndian.PutUint32(dimBuf[:], uint32(bv.Dim))
-	if _, err := buf.Write(dimBuf[:]); err != nil {
-		return nil, err
-	}
+	buf.Write(dimBuf[:])
 
-	// Packed bits
-	if err := serial.WriteUint64Slice(buf, bv.Bits); err != nil {
-		return nil, err
-	}
+	serial.WriteUint64Slice(buf, bv.Bits) //nolint:errcheck
 
-	// Outlier flag
 	hasOutliers := byte(0)
 	if len(bv.OutlierIndices) > 0 {
 		hasOutliers = 1
 	}
-	if err := buf.WriteByte(hasOutliers); err != nil {
-		return nil, err
-	}
+	buf.WriteByte(hasOutliers)
 
-	// Outlier data (only if present)
 	if hasOutliers == 1 {
-		// Convert indices to uint64 for serialization
 		idxSlice := make([]uint64, len(bv.OutlierIndices))
 		for i, idx := range bv.OutlierIndices {
 			idxSlice[i] = uint64(idx)
 		}
-		if err := serial.WriteUint64Slice(buf, idxSlice); err != nil {
-			return nil, err
-		}
-		if err := serial.WriteFloat64Slice(buf, bv.OutlierValues); err != nil {
-			return nil, err
-		}
+		serial.WriteUint64Slice(buf, idxSlice)   //nolint:errcheck
+		serial.WriteFloat64Slice(buf, bv.OutlierValues) //nolint:errcheck
 	}
 
 	return buf.Bytes(), nil

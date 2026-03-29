@@ -157,3 +157,30 @@ func TestOrthogonal_NilRng(t *testing.T) {
 		t.Errorf("expected ErrNilRNG, got %v", err)
 	}
 }
+
+// TestOrthogonal_Dim1_BothSigns verifies that RandomOrthogonal(1, rng) can
+// produce both +1.0 and -1.0 by trying multiple seeds. This ensures the
+// negative branch (rng.Float64() < 0.5) is exercised.
+func TestOrthogonal_Dim1_BothSigns(t *testing.T) {
+	gotPositive := false
+	gotNegative := false
+	for seed := int64(0); seed < 100; seed++ {
+		rng := rand.New(rand.NewSource(seed))
+		Q, err := RandomOrthogonal(1, rng)
+		if err != nil {
+			t.Fatalf("seed=%d: unexpected error: %v", seed, err)
+		}
+		v := Q.At(0, 0)
+		if v == 1.0 {
+			gotPositive = true
+		} else if v == -1.0 {
+			gotNegative = true
+		} else {
+			t.Fatalf("seed=%d: expected ±1.0, got %g", seed, v)
+		}
+		if gotPositive && gotNegative {
+			return
+		}
+	}
+	t.Fatal("failed to observe both +1.0 and -1.0 across 100 seeds")
+}

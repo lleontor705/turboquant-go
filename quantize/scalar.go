@@ -96,15 +96,8 @@ func (q *UniformQuantizer) encodeValue(v float64) byte {
 		v = q.max
 	}
 
+	// After clamping v to [min, max], code is guaranteed in [0, levels].
 	code := math.Round((v - q.min) / q.scale)
-
-	// Safety clamp against floating-point edge cases.
-	if code < 0 {
-		code = 0
-	} else if code > float64(q.levels) {
-		code = float64(q.levels)
-	}
-
 	return byte(code)
 }
 

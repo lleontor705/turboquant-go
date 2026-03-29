@@ -45,13 +45,19 @@ func DefaultPolarConfig(dim int) PolarConfig {
 }
 
 // BitsPerCoord returns the average bits per coordinate for this configuration.
-// For the default config: (4*d/2 + 2*d/4 + 2*d/8 + 2*d/16 + 16*d/16) / d = 3.875
+// For the default config (L=4): (4·d/2 + 2·d/4 + 2·d/8 + 2·d/16 + 16·d/16) / d = 3.875
 func (c PolarConfig) BitsPerCoord() float64 {
 	d := float64(c.Dim)
-	totalBits := float64(c.BitsLevel1)*d/2 +
-		float64(c.BitsRest)*d/4 +
-		float64(c.BitsRest)*d/8 +
-		float64(c.BitsRest)*d/16 +
-		float64(c.RadiusBits)*d/16
+	totalBits := 0.0
+	for l := 1; l <= c.Levels; l++ {
+		nAngles := d / float64(int(1)<<l) // d / 2^l
+		if l == 1 {
+			totalBits += float64(c.BitsLevel1) * nAngles
+		} else {
+			totalBits += float64(c.BitsRest) * nAngles
+		}
+	}
+	nRadii := d / float64(int(1)<<c.Levels) // d / 2^L
+	totalBits += float64(c.RadiusBits) * nRadii
 	return totalBits / d
 }

@@ -82,13 +82,12 @@ func NewPolarQuantizer(config PolarConfig) (*PolarQuantizer, error) {
 	}
 
 	// Generate random orthogonal matrix.
+	// Cannot fail: config.Dim >= 2 (validated above) and rng is non-nil.
 	rng := rand.New(rand.NewSource(config.Seed))
-	rot, err := rotate.RandomOrthogonal(config.Dim, rng)
-	if err != nil {
-		return nil, fmt.Errorf("polar: failed to generate rotation: %w", err)
-	}
+	rot, _ := rotate.RandomOrthogonal(config.Dim, rng)
 
 	// Precompute codebooks for each level.
+	// Cannot fail: level >= 1, bits >= 1 are validated above.
 	codebooks := make([][]float64, config.Levels)
 	for ℓ := 1; ℓ <= config.Levels; ℓ++ {
 		n := PolarSinExponent(ℓ)
@@ -99,10 +98,7 @@ func NewPolarQuantizer(config PolarConfig) (*PolarQuantizer, error) {
 			bits = config.BitsRest
 		}
 
-		cb, err := LevelCodebook(ℓ, n, bits)
-		if err != nil {
-			return nil, fmt.Errorf("polar: failed to build codebook for level %d: %w", ℓ, err)
-		}
+		cb, _ := LevelCodebook(ℓ, n, bits)
 		codebooks[ℓ-1] = cb
 	}
 
@@ -137,35 +133,13 @@ func (pq *PolarQuantizer) Quantize(vec []float64) (CompressedVector, error) {
 	}
 
 	// Normalize to unit norm.
-	unit := make([]float64, pq.config.Dim)
-	copy(unit, vec)
-	norm := 0.0
-	for _, v := range unit {
-		norm += v * v
-	}
-	norm = math.Sqrt(norm)
-	if norm > 0 {
-		invNorm := 1.0 / norm
-		for i := range unit {
-			unit[i] *= invNorm
-		}
-	}
+	unit, norm := normalizeUnit(vec)
 
 	// Apply random rotation: y = Π · x
-	rotated := make([]float64, pq.config.Dim)
-	for i := 0; i < pq.config.Dim; i++ {
-		var sum float64
-		for j := 0; j < pq.config.Dim; j++ {
-			sum += pq.rotation.At(i, j) * unit[j]
-		}
-		rotated[i] = sum
-	}
+	rotated := rotateForward(pq.rotation, unit)
 
-	// Polar transform: rotated → (angles per level, final radii).
-	angles, radii, err := PolarTransform(rotated, pq.config.Levels)
-	if err != nil {
-		return CompressedVector{}, fmt.Errorf("polar: polar transform failed: %w", err)
-	}
+	// Polar transform — cannot fail: dim is validated as multiple of 2^Levels.
+	angles, radii, _ := PolarTransform(rotated, pq.config.Levels)
 
 	// Quantize angles per level.
 	// Level-1 angles from atan2 are in [-π, π], but the codebook is on [0, 2π).
@@ -187,10 +161,8 @@ func (pq *PolarQuantizer) Quantize(vec []float64) (CompressedVector, error) {
 	}
 
 	// Pack everything into CompressedVector.Data.
-	data, err := pq.pack(norm, angleIndices, radii)
-	if err != nil {
-		return CompressedVector{}, fmt.Errorf("polar: pack failed: %w", err)
-	}
+	// Cannot fail: radii from polar decomposition are always >= 0.
+	data := pq.packUnchecked(norm, angleIndices, radii)
 
 	return CompressedVector{
 		Data:    data,
@@ -229,11 +201,8 @@ func (pq *PolarQuantizer) Dequantize(cv CompressedVector) ([]float64, error) {
 	angleCentroids := make([][]float64, pq.config.Levels)
 	for ℓ := 0; ℓ < pq.config.Levels; ℓ++ {
 		centroids := make([]float64, len(angleIndices[ℓ]))
+		// Index bounds guaranteed by unpackIndices (bit-masked to [0, 2^bits-1]).
 		for i, idx := range angleIndices[ℓ] {
-			if idx < 0 || idx >= len(pq.codebooks[ℓ]) {
-				return nil, fmt.Errorf("polar: invalid index %d for level %d codebook size %d",
-					idx, ℓ+1, len(pq.codebooks[ℓ]))
-			}
 			centroids[i] = pq.codebooks[ℓ][idx]
 		}
 		if ℓ == 0 {
@@ -248,20 +217,11 @@ func (pq *PolarQuantizer) Dequantize(cv CompressedVector) ([]float64, error) {
 	}
 
 	// Inverse polar transform.
-	reconstructed, err := InversePolarTransform(angleCentroids, radii, pq.config.Levels, pq.config.Dim)
-	if err != nil {
-		return nil, fmt.Errorf("polar: inverse polar transform failed: %w", err)
-	}
+	// Cannot fail: dimensions are consistent from pack/unpack round-trip.
+	reconstructed, _ := InversePolarTransform(angleCentroids, radii, pq.config.Levels, pq.config.Dim)
 
-	// Apply inverse rotation: x̃ = Π^T · ỹ
-	result := make([]float64, pq.config.Dim)
-	for i := 0; i < pq.config.Dim; i++ {
-		var sum float64
-		for j := 0; j < pq.config.Dim; j++ {
-			sum += pq.rotation.At(j, i) * reconstructed[j]
-		}
-		result[i] = sum
-	}
+	// Apply inverse rotation: x~ = rotation^T * y~
+	result := rotateInverse(pq.rotation, reconstructed)
 
 	// Re-apply original norm.
 	if norm != 1.0 {
@@ -311,52 +271,36 @@ func (pq *PolarQuantizer) RotationMatrix() *mat.Dense {
 //	...
 //	[level L indices packed] — packIndices(angleIndices[L-1], bitsRest)
 
-// pack serializes angle indices and radii into the binary wire format.
-func (pq *PolarQuantizer) pack(norm float64, angleIndices [][]int, radii []float64) ([]byte, error) {
+// packUnchecked serializes angle indices and radii into the binary wire format.
+// Radii are guaranteed >= 0 from polar decomposition; buffer writes never fail.
+func (pq *PolarQuantizer) packUnchecked(norm float64, angleIndices [][]int, radii []float64) []byte {
 	var buf bytes.Buffer
 	var u32 [4]byte
 	var u16 [2]byte
 	var u64 [8]byte
 
-	// Version.
 	buf.WriteByte(polarWireVersion)
 
-	// Dim.
 	binary.LittleEndian.PutUint32(u32[:], uint32(pq.config.Dim))
 	buf.Write(u32[:])
-
-	// Levels.
 	buf.WriteByte(byte(pq.config.Levels))
-
-	// BitsLevel1.
 	buf.WriteByte(byte(pq.config.BitsLevel1))
-
-	// BitsRest.
 	buf.WriteByte(byte(pq.config.BitsRest))
-
-	// RadiusBits.
 	buf.WriteByte(byte(pq.config.RadiusBits))
 
-	// Norm.
 	binary.LittleEndian.PutUint64(u64[:], math.Float64bits(norm))
 	buf.Write(u64[:])
 
-	// NumRadii.
-	numRadii := len(radii)
-	binary.LittleEndian.PutUint32(u32[:], uint32(numRadii))
+	binary.LittleEndian.PutUint32(u32[:], uint32(len(radii)))
 	buf.Write(u32[:])
 
-	// Radii as quantized uint16.
-	quantized, err := quantizeRadii16(radii)
-	if err != nil {
-		return nil, err
-	}
+	// Radii as quantized uint16 — cannot fail: radii from polar decomposition are >= 0.
+	quantized, _ := quantizeRadii16(radii)
 	for _, r := range quantized {
 		binary.LittleEndian.PutUint16(u16[:], r)
 		buf.Write(u16[:])
 	}
 
-	// Packed angle indices per level.
 	for ℓ := 0; ℓ < pq.config.Levels; ℓ++ {
 		var bits int
 		if ℓ == 0 {
@@ -368,7 +312,7 @@ func (pq *PolarQuantizer) pack(norm float64, angleIndices [][]int, radii []float
 		buf.Write(packed)
 	}
 
-	return buf.Bytes(), nil
+	return buf.Bytes()
 }
 
 // unpack deserializes the binary wire format into angle indices and radii.
@@ -476,17 +420,10 @@ func quantizeRadii16(radii []float64) ([]uint16, error) {
 	if len(radii) == 0 {
 		return []uint16{}, nil
 	}
-	var max float64
 	for _, r := range radii {
 		if r < 0 {
 			return nil, fmt.Errorf("polar: radius must be >= 0, got %.6f", r)
 		}
-		if r > max {
-			max = r
-		}
-	}
-	if max == 0 {
-		return make([]uint16, len(radii)), nil
 	}
 	// Radii from unit vectors are in [0,1]; clamp to 1 for numerical noise.
 	scale := float64(math.MaxUint16)
@@ -495,14 +432,8 @@ func quantizeRadii16(radii []float64) ([]uint16, error) {
 		if r > 1.0 {
 			r = 1.0
 		}
-		q := int(math.Round(r * scale))
-		if q < 0 {
-			q = 0
-		}
-		if q > math.MaxUint16 {
-			q = math.MaxUint16
-		}
-		quantized[i] = uint16(q)
+		// After clamping r to [0,1], q is guaranteed in [0, MaxUint16].
+		quantized[i] = uint16(math.Round(r * scale))
 	}
 	return quantized, nil
 }

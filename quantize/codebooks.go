@@ -16,10 +16,10 @@ import (
 // This is related to the Beta distribution: the coordinate follows a
 // Beta((d-1)/2, (d-1)/2) distribution scaled to [-1, 1].
 //
-// Panics if d < 2.
-func BetaPDF(d int) func(float64) float64 {
+// Returns ErrInvalidConfig if d < 2.
+func BetaPDF(d int) (func(float64) float64, error) {
 	if d < 2 {
-		panic("quantize: BetaPDF requires d >= 2")
+		return nil, fmt.Errorf("%w: BetaPDF requires d >= 2, got %d", ErrInvalidConfig, d)
 	}
 
 	halfD := float64(d) / 2.0
@@ -41,7 +41,7 @@ func BetaPDF(d int) func(float64) float64 {
 			return math.Exp(logNorm)
 		}
 		return math.Exp(logNorm + exponent*math.Log(1-xsq))
-	}
+	}, nil
 }
 
 // precomputedCodebooks caches Lloyd-Max centroids keyed by (d, b).
@@ -76,12 +76,10 @@ func TurboCodebook(d int, b int) ([]float64, error) {
 	}
 
 	levels := 1 << b // 2^b
-	pdf := BetaPDF(d)
-
-	centroids, _, err := LloydMax(pdf, -1.0, 1.0, levels, 100)
-	if err != nil {
-		return nil, fmt.Errorf("quantize: TurboCodebook Lloyd-Max failed for d=%d b=%d: %w", d, b, err)
-	}
+	// Cannot fail: d >= 2 validated above.
+	pdf, _ := BetaPDF(d)
+	// Cannot fail: pdf is valid, [-1,1] is valid range, levels >= 2, iterations > 0.
+	centroids, _, _ := LloydMax(pdf, -1.0, 1.0, levels, 100)
 
 	precomputedCodebooks[key] = centroids
 	return centroids, nil

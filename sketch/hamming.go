@@ -5,22 +5,24 @@ import (
 )
 
 // HammingDistance computes the Hamming distance (number of differing bits)
-// between two BitVectors. It panics on dimension mismatch — use this on the
-// hot path where inputs are guaranteed to have matching dimensions.
-func HammingDistance(a, b BitVector) int {
-	if a.Dim != b.Dim {
-		panic("sketch: dimension mismatch")
-	}
-	return hamming(a.Bits, b.Bits)
-}
-
-// HammingDistanceSafe computes the Hamming distance between two BitVectors,
-// returning an error on dimension mismatch.
-func HammingDistanceSafe(a, b BitVector) (int, error) {
+// between two BitVectors. Returns ErrDimensionMismatch if dimensions differ.
+func HammingDistance(a, b BitVector) (int, error) {
 	if a.Dim != b.Dim {
 		return 0, ErrDimensionMismatch
 	}
 	return hamming(a.Bits, b.Bits), nil
+}
+
+// HammingDistanceSafe is an alias for HammingDistance.
+// Deprecated: Use HammingDistance directly; it now returns an error.
+func HammingDistanceSafe(a, b BitVector) (int, error) {
+	return HammingDistance(a, b)
+}
+
+// hammingDistanceUnchecked computes the Hamming distance without validation.
+// For internal hot paths where dimensions are guaranteed to match.
+func hammingDistanceUnchecked(a, b BitVector) int {
+	return hamming(a.Bits, b.Bits)
 }
 
 // hamming computes the popcount of the XOR of two packed uint64 slices.
