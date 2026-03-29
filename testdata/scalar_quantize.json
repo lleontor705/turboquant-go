@@ -1,0 +1,227 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "name": "8bit_basic",
+      "min": 0,
+      "max": 10,
+      "bits": 8,
+      "input": [
+        0,
+        5,
+        10
+      ],
+      "expected_approx": [
+        0,
+        5.0196078431,
+        10
+      ]
+    },
+    {
+      "name": "4bit_basic",
+      "min": -5,
+      "max": 5,
+      "bits": 4,
+      "input": [
+        -5,
+        0,
+        5
+      ],
+      "expected_approx": [
+        -5,
+        0.3333333333,
+        5
+      ]
+    },
+    {
+      "name": "8bit_negative_range",
+      "min": -100,
+      "max": 0,
+      "bits": 8,
+      "input": [
+        -100,
+        -50,
+        0
+      ],
+      "expected_approx": [
+        -100,
+        -49.8039215686,
+        0
+      ]
+    },
+    {
+      "name": "4bit_small_range",
+      "min": 0,
+      "max": 1,
+      "bits": 4,
+      "input": [
+        0,
+        0.5,
+        1
+      ],
+      "expected_approx": [
+        0,
+        0.5333333333,
+        1
+      ]
+    },
+    {
+      "name": "8bit_clamp_low",
+      "min": 0,
+      "max": 10,
+      "bits": 8,
+      "input": [
+        -5,
+        0,
+        5
+      ],
+      "expected_approx": [
+        0,
+        0,
+        5.0196078431
+      ]
+    },
+    {
+      "name": "8bit_clamp_high",
+      "min": 0,
+      "max": 10,
+      "bits": 8,
+      "input": [
+        5,
+        10,
+        15
+      ],
+      "expected_approx": [
+        5.0196078431,
+        10,
+        10
+      ]
+    },
+    {
+      "name": "8bit_single_value",
+      "min": 0,
+      "max": 100,
+      "bits": 8,
+      "input": [
+        50
+      ],
+      "expected_approx": [
+        50.1960784314
+      ]
+    },
+    {
+      "name": "4bit_all_levels",
+      "min": 0,
+      "max": 15,
+      "bits": 4,
+      "input": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "expected_approx": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ]
+    },
+    {
+      "name": "8bit_boundary_values",
+      "min": 0,
+      "max": 255,
+      "bits": 8,
+      "input": [
+        0,
+        127.5,
+        255
+      ],
+      "expected_approx": [
+        0,
+        128,
+        255
+      ]
+    },
+    {
+      "name": "4bit_negative_values",
+      "min": -10,
+      "max": -5,
+      "bits": 4,
+      "input": [
+        -10,
+        -7.5,
+        -5
+      ],
+      "expected_approx": [
+        -10,
+        -7.3333333333,
+        -5
+      ]
+    },
+    {
+      "name": "8bit_fine_range",
+      "min": 0,
+      "max": 1,
+      "bits": 8,
+      "input": [
+        0,
+        0.25,
+        0.5,
+        0.75,
+        1
+      ],
+      "expected_approx": [
+        0,
+        0.2509803922,
+        0.5019607843,
+        0.7490196078,
+        1
+      ]
+    },
+    {
+      "name": "4bit_odd_length",
+      "min": 0,
+      "max": 15,
+      "bits": 4,
+      "input": [
+        3,
+        7,
+        11,
+        15,
+        0
+      ],
+      "expected_approx": [
+        3,
+        7,
+        11,
+        15,
+        0
+      ]
+    }
+  ]
+}

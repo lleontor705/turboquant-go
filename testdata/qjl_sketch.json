@@ -1,0 +1,127 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "name": "zero_vector",
+      "dim": 8,
+      "sketch_dim": 4,
+      "seed": 42,
+      "outlier_k": 0,
+      "input": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "expected_bit_count": 0,
+      "expected_dim": 4
+    },
+    {
+      "name": "unit_basis_0",
+      "dim": 8,
+      "sketch_dim": 4,
+      "seed": 42,
+      "outlier_k": 0,
+      "input": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "expected_bit_count": 2,
+      "expected_dim": 4
+    },
+    {
+      "name": "all_ones",
+      "dim": 8,
+      "sketch_dim": 8,
+      "seed": 42,
+      "outlier_k": 0,
+      "input": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "expected_bit_count": 5,
+      "expected_dim": 8
+    },
+    {
+      "name": "mixed_vector",
+      "dim": 8,
+      "sketch_dim": 4,
+      "seed": 123,
+      "outlier_k": 0,
+      "input": [
+        1,
+        -2,
+        3,
+        -4,
+        0.5,
+        -0.5,
+        2,
+        -1
+      ],
+      "expected_bit_count": 1,
+      "expected_dim": 4
+    },
+    {
+      "name": "with_outliers",
+      "dim": 8,
+      "sketch_dim": 4,
+      "seed": 42,
+      "outlier_k": 2,
+      "input": [
+        1,
+        -2,
+        3,
+        -4,
+        0.5,
+        -0.5,
+        2,
+        -1
+      ],
+      "expected_bit_count": 1,
+      "expected_dim": 4
+    },
+    {
+      "name": "large_vector",
+      "dim": 16,
+      "sketch_dim": 8,
+      "seed": 99,
+      "outlier_k": 0,
+      "input": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        -1,
+        -2,
+        -3,
+        -4,
+        -5,
+        -6,
+        -7,
+        -8
+      ],
+      "expected_bit_count": 4,
+      "expected_dim": 8
+    }
+  ]
+}

@@ -1,0 +1,1287 @@
+?   	github.com/user/turboquant/cmd/genfixtures	[no test files]
+?   	github.com/user/turboquant/examples/ann_search	[no test files]
+?   	github.com/user/turboquant/examples/polar_search	[no test files]
+?   	github.com/user/turboquant/examples/prod_search	[no test files]
+?   	github.com/user/turboquant/examples/turbo_search	[no test files]
+=== RUN   TestGoldenBitPacking
+=== RUN   TestGoldenBitPacking/standard_8
+=== RUN   TestGoldenBitPacking/all_positive_8
+=== RUN   TestGoldenBitPacking/all_negative_8
+=== RUN   TestGoldenBitPacking/single_positive
+=== RUN   TestGoldenBitPacking/single_negative
+=== RUN   TestGoldenBitPacking/alternating_16
+=== RUN   TestGoldenBitPacking/first_only_8
+=== RUN   TestGoldenBitPacking/last_only_8
+=== RUN   TestGoldenBitPacking/65_elements
+=== RUN   TestGoldenBitPacking/64_all_positive
+=== RUN   TestGoldenBitPacking/128_alternating
+--- PASS: TestGoldenBitPacking (0.00s)
+    --- PASS: TestGoldenBitPacking/standard_8 (0.00s)
+    --- PASS: TestGoldenBitPacking/all_positive_8 (0.00s)
+    --- PASS: TestGoldenBitPacking/all_negative_8 (0.00s)
+    --- PASS: TestGoldenBitPacking/single_positive (0.00s)
+    --- PASS: TestGoldenBitPacking/single_negative (0.00s)
+    --- PASS: TestGoldenBitPacking/alternating_16 (0.00s)
+    --- PASS: TestGoldenBitPacking/first_only_8 (0.00s)
+    --- PASS: TestGoldenBitPacking/last_only_8 (0.00s)
+    --- PASS: TestGoldenBitPacking/65_elements (0.00s)
+    --- PASS: TestGoldenBitPacking/64_all_positive (0.00s)
+    --- PASS: TestGoldenBitPacking/128_alternating (0.00s)
+=== RUN   TestGoldenBitPackingEmpty
+--- PASS: TestGoldenBitPackingEmpty (0.00s)
+=== RUN   TestGoldenBitPackingInvalid
+--- PASS: TestGoldenBitPackingInvalid (0.00s)
+=== RUN   TestPack_Standard
+--- PASS: TestPack_Standard (0.00s)
+=== RUN   TestPack_Empty
+--- PASS: TestPack_Empty (0.00s)
+=== RUN   TestPack_InvalidValues
+=== RUN   TestPack_InvalidValues/zero_value
+=== RUN   TestPack_InvalidValues/positive_two
+=== RUN   TestPack_InvalidValues/negative_two
+=== RUN   TestPack_InvalidValues/int8_max
+=== RUN   TestPack_InvalidValues/int8_min
+--- PASS: TestPack_InvalidValues (0.00s)
+    --- PASS: TestPack_InvalidValues/zero_value (0.00s)
+    --- PASS: TestPack_InvalidValues/positive_two (0.00s)
+    --- PASS: TestPack_InvalidValues/negative_two (0.00s)
+    --- PASS: TestPack_InvalidValues/int8_max (0.00s)
+    --- PASS: TestPack_InvalidValues/int8_min (0.00s)
+=== RUN   TestPack_SingleElement
+=== RUN   TestPack_SingleElement/+1
+=== RUN   TestPack_SingleElement/-1
+--- PASS: TestPack_SingleElement (0.00s)
+    --- PASS: TestPack_SingleElement/+1 (0.00s)
+    --- PASS: TestPack_SingleElement/-1 (0.00s)
+=== RUN   TestPack_LittleEndianConvention
+--- PASS: TestPack_LittleEndianConvention (0.00s)
+=== RUN   TestPack_CrossesWordBoundary
+--- PASS: TestPack_CrossesWordBoundary (0.00s)
+=== RUN   TestUnpack_Standard
+--- PASS: TestUnpack_Standard (0.00s)
+=== RUN   TestUnpack_NonMultipleOf64
+=== RUN   TestUnpack_NonMultipleOf64/dim=1
+=== RUN   TestUnpack_NonMultipleOf64/dim=65
+=== RUN   TestUnpack_NonMultipleOf64/dim=100
+=== RUN   TestUnpack_NonMultipleOf64/dim=63
+=== RUN   TestUnpack_NonMultipleOf64/dim=127
+=== RUN   TestUnpack_NonMultipleOf64/dim=128
+--- PASS: TestUnpack_NonMultipleOf64 (0.00s)
+    --- PASS: TestUnpack_NonMultipleOf64/dim=1 (0.00s)
+    --- PASS: TestUnpack_NonMultipleOf64/dim=65 (0.00s)
+    --- PASS: TestUnpack_NonMultipleOf64/dim=100 (0.00s)
+    --- PASS: TestUnpack_NonMultipleOf64/dim=63 (0.00s)
+    --- PASS: TestUnpack_NonMultipleOf64/dim=127 (0.00s)
+    --- PASS: TestUnpack_NonMultipleOf64/dim=128 (0.00s)
+=== RUN   TestUnpack_InsufficientData
+=== RUN   TestUnpack_InsufficientData/need_2_words,_have_1
+=== RUN   TestUnpack_InsufficientData/empty_packed,_n=1
+=== RUN   TestUnpack_InsufficientData/nil_packed,_n=1
+=== RUN   TestUnpack_InsufficientData/need_3_words,_have_2
+--- PASS: TestUnpack_InsufficientData (0.00s)
+    --- PASS: TestUnpack_InsufficientData/need_2_words,_have_1 (0.00s)
+    --- PASS: TestUnpack_InsufficientData/empty_packed,_n=1 (0.00s)
+    --- PASS: TestUnpack_InsufficientData/nil_packed,_n=1 (0.00s)
+    --- PASS: TestUnpack_InsufficientData/need_3_words,_have_2 (0.00s)
+=== RUN   TestUnpack_ZeroLength
+--- PASS: TestUnpack_ZeroLength (0.00s)
+=== RUN   TestUnpack_NegativeLength
+--- PASS: TestUnpack_NegativeLength (0.00s)
+=== RUN   TestUnpack_PartialWord
+--- PASS: TestUnpack_PartialWord (0.00s)
+=== RUN   TestBitPackingRoundTrip
+--- PASS: TestBitPackingRoundTrip (0.00s)
+=== RUN   TestBitPackingRoundTrip_LargeDims
+--- PASS: TestBitPackingRoundTrip_LargeDims (0.00s)
+=== RUN   TestBitPackingRoundTrip_PackUnpackPack
+--- PASS: TestBitPackingRoundTrip_PackUnpackPack (0.00s)
+=== RUN   TestPopCount
+=== RUN   TestPopCount/empty
+=== RUN   TestPopCount/all_zeros
+=== RUN   TestPopCount/single_bit
+=== RUN   TestPopCount/all_ones_(64_bits)
+=== RUN   TestPopCount/0x4D_(4_bits_set)
+=== RUN   TestPopCount/two_words
+=== RUN   TestPopCount/alternating_bits
+=== RUN   TestPopCount/mixed
+--- PASS: TestPopCount (0.00s)
+    --- PASS: TestPopCount/empty (0.00s)
+    --- PASS: TestPopCount/all_zeros (0.00s)
+    --- PASS: TestPopCount/single_bit (0.00s)
+    --- PASS: TestPopCount/all_ones_(64_bits) (0.00s)
+    --- PASS: TestPopCount/0x4D_(4_bits_set) (0.00s)
+    --- PASS: TestPopCount/two_words (0.00s)
+    --- PASS: TestPopCount/alternating_bits (0.00s)
+    --- PASS: TestPopCount/mixed (0.00s)
+=== RUN   TestPopCount_MatchesManual
+--- PASS: TestPopCount_MatchesManual (0.00s)
+=== RUN   FuzzBitPacking
+=== RUN   FuzzBitPacking/seed#0
+=== RUN   FuzzBitPacking/seed#1
+=== RUN   FuzzBitPacking/seed#2
+=== RUN   FuzzBitPacking/seed#3
+=== RUN   FuzzBitPacking/seed#4
+=== RUN   FuzzBitPacking/seed#5
+=== RUN   FuzzBitPacking/seed#6
+=== RUN   FuzzBitPacking/seed#7
+=== RUN   FuzzBitPacking/seed#8
+--- PASS: FuzzBitPacking (0.00s)
+    --- PASS: FuzzBitPacking/seed#0 (0.00s)
+    --- PASS: FuzzBitPacking/seed#1 (0.00s)
+    --- PASS: FuzzBitPacking/seed#2 (0.00s)
+    --- PASS: FuzzBitPacking/seed#3 (0.00s)
+    --- PASS: FuzzBitPacking/seed#4 (0.00s)
+    --- PASS: FuzzBitPacking/seed#5 (0.00s)
+    --- PASS: FuzzBitPacking/seed#6 (0.00s)
+    --- PASS: FuzzBitPacking/seed#7 (0.00s)
+    --- PASS: FuzzBitPacking/seed#8 (0.00s)
+=== RUN   FuzzBitPacking_RandomDims
+=== RUN   FuzzBitPacking_RandomDims/seed#0
+=== RUN   FuzzBitPacking_RandomDims/seed#1
+=== RUN   FuzzBitPacking_RandomDims/seed#2
+=== RUN   FuzzBitPacking_RandomDims/seed#3
+=== RUN   FuzzBitPacking_RandomDims/seed#4
+=== RUN   FuzzBitPacking_RandomDims/seed#5
+=== RUN   FuzzBitPacking_RandomDims/seed#6
+=== RUN   FuzzBitPacking_RandomDims/seed#7
+=== RUN   FuzzBitPacking_RandomDims/seed#8
+--- PASS: FuzzBitPacking_RandomDims (0.00s)
+    --- PASS: FuzzBitPacking_RandomDims/seed#0 (0.00s)
+    --- PASS: FuzzBitPacking_RandomDims/seed#1 (0.00s)
+    --- PASS: FuzzBitPacking_RandomDims/seed#2 (0.00s)
+    --- PASS: FuzzBitPacking_RandomDims/seed#3 (0.00s)
+    --- PASS: FuzzBitPacking_RandomDims/seed#4 (0.00s)
+    --- PASS: FuzzBitPacking_RandomDims/seed#5 (0.00s)
+    --- PASS: FuzzBitPacking_RandomDims/seed#6 (0.00s)
+    --- PASS: FuzzBitPacking_RandomDims/seed#7 (0.00s)
+    --- PASS: FuzzBitPacking_RandomDims/seed#8 (0.00s)
+=== RUN   ExamplePack
+--- PASS: ExamplePack (0.00s)
+PASS
+ok  	github.com/user/turboquant/internal/bits	0.410s
+=== RUN   TestVersionRoundTrip
+--- PASS: TestVersionRoundTrip (0.00s)
+=== RUN   TestUnknownVersion
+--- PASS: TestUnknownVersion (0.00s)
+=== RUN   TestUint64SliceRoundTrip
+--- PASS: TestUint64SliceRoundTrip (0.00s)
+=== RUN   TestFloat64SliceRoundTrip
+--- PASS: TestFloat64SliceRoundTrip (0.00s)
+=== RUN   TestTruncatedData
+--- PASS: TestTruncatedData (0.00s)
+=== RUN   TestEmptySlices
+--- PASS: TestEmptySlices (0.00s)
+=== RUN   TestLargeSlice
+--- PASS: TestLargeSlice (0.00s)
+=== RUN   TestLittleEndianExplicit
+--- PASS: TestLittleEndianExplicit (0.00s)
+=== RUN   TestWriteReadVersionThenSlices
+--- PASS: TestWriteReadVersionThenSlices (0.00s)
+=== RUN   TestTruncatedLengthPrefix
+--- PASS: TestTruncatedLengthPrefix (0.00s)
+PASS
+ok  	github.com/user/turboquant/internal/serial	0.322s
+=== RUN   TestBetaPDF_Normalization
+=== RUN   TestBetaPDF_Normalization/d=64
+    codebooks_test.go:39: d=64: integral = 1.00000000
+=== RUN   TestBetaPDF_Normalization/d=256
+    codebooks_test.go:39: d=256: integral = 1.00000000
+=== RUN   TestBetaPDF_Normalization/d=768
+    codebooks_test.go:39: d=768: integral = 1.00000000
+--- PASS: TestBetaPDF_Normalization (0.00s)
+    --- PASS: TestBetaPDF_Normalization/d=64 (0.00s)
+    --- PASS: TestBetaPDF_Normalization/d=256 (0.00s)
+    --- PASS: TestBetaPDF_Normalization/d=768 (0.00s)
+=== RUN   TestBetaPDF_Symmetry
+--- PASS: TestBetaPDF_Symmetry (0.00s)
+=== RUN   TestBetaPDF_SmallDim
+=== RUN   TestBetaPDF_SmallDim/d=3_uniform
+=== RUN   TestBetaPDF_SmallDim/d=2_panics
+--- PASS: TestBetaPDF_SmallDim (0.00s)
+    --- PASS: TestBetaPDF_SmallDim/d=3_uniform (0.00s)
+    --- PASS: TestBetaPDF_SmallDim/d=2_panics (0.00s)
+=== RUN   TestTurboCodebook_ValidBits
+=== RUN   TestTurboCodebook_ValidBits/b=1
+=== RUN   TestTurboCodebook_ValidBits/b=2
+=== RUN   TestTurboCodebook_ValidBits/b=3
+=== RUN   TestTurboCodebook_ValidBits/b=4
+=== RUN   TestTurboCodebook_ValidBits/b=5_error
+=== RUN   TestTurboCodebook_ValidBits/b=0_error
+--- PASS: TestTurboCodebook_ValidBits (0.10s)
+    --- PASS: TestTurboCodebook_ValidBits/b=1 (0.01s)
+    --- PASS: TestTurboCodebook_ValidBits/b=2 (0.01s)
+    --- PASS: TestTurboCodebook_ValidBits/b=3 (0.03s)
+    --- PASS: TestTurboCodebook_ValidBits/b=4 (0.05s)
+    --- PASS: TestTurboCodebook_ValidBits/b=5_error (0.00s)
+    --- PASS: TestTurboCodebook_ValidBits/b=0_error (0.00s)
+=== RUN   TestTurboCodebook_Dimensions
+=== RUN   TestTurboCodebook_Dimensions/d=64
+=== RUN   TestTurboCodebook_Dimensions/d=768
+=== RUN   TestTurboCodebook_Dimensions/d=1024
+=== RUN   TestTurboCodebook_Dimensions/d=0_error
+=== RUN   TestTurboCodebook_Dimensions/d=1_error
+--- PASS: TestTurboCodebook_Dimensions (0.03s)
+    --- PASS: TestTurboCodebook_Dimensions/d=64 (0.00s)
+    --- PASS: TestTurboCodebook_Dimensions/d=768 (0.01s)
+    --- PASS: TestTurboCodebook_Dimensions/d=1024 (0.01s)
+    --- PASS: TestTurboCodebook_Dimensions/d=0_error (0.00s)
+    --- PASS: TestTurboCodebook_Dimensions/d=1_error (0.00s)
+=== RUN   TestTurboCodebook_Values
+=== RUN   TestTurboCodebook_Values/d=64_b=1
+    codebooks_test.go:185: centroids: [-0.10012538251228015 0.10012538251228008]
+=== RUN   TestTurboCodebook_Values/d=64_b=2
+    codebooks_test.go:185: centroids: [-0.18749459093967089 -0.05651430779662242 0.05651430906052951 0.1874945919449359]
+=== RUN   TestTurboCodebook_Values/d=64_b=3
+    codebooks_test.go:185: centroids: [-0.2639070248791181 -0.16616230347176497 -0.09382720000807539 -0.030464576028676655 0.03047314925089402 0.09383530569118724 0.16616946242041425 0.2639126553595955]
+=== RUN   TestTurboCodebook_Values/d=64_b=4
+    codebooks_test.go:185: centroids: [-0.3291446689697848 -0.2509707352693399 -0.19682760387931764 -0.15298162607994284 -0.11478050606664893 -0.07997487120251474 -0.04722447515851705 -0.015590452877134665 0.0156880285706221 0.0473205766274509 0.08006803451720977 0.11486927749412587 0.1530645360491266 0.1969030803892896 0.2510368444211216 0.3291980949959627]
+=== RUN   TestTurboCodebook_Values/d=256_b=1
+    codebooks_test.go:185: centroids: [-0.04991544698239798 0.049915446982398214]
+=== RUN   TestTurboCodebook_Values/d=256_b=2
+    codebooks_test.go:185: centroids: [-0.09423248692281726 -0.02828731814355859 0.028287319575649946 0.09423248808564513]
+=== RUN   TestTurboCodebook_Values/d=256_b=3
+    codebooks_test.go:185: centroids: [-0.13384076220706467 -0.08375691715880493 -0.04716016244752395 -0.015292372205853803 0.015301132916795149 0.047168485042474576 0.08376435312585677 0.13384677005974446]
+=== RUN   TestTurboCodebook_Values/d=256_b=4
+    codebooks_test.go:185: centroids: [-0.16845836587980312 -0.1275081525967134 -0.09958848936387234 -0.07719472323619629 -0.05780894538763203 -0.04022345225717637 -0.02372385814385812 -0.007812882643944866 0.007910640714834827 0.02382024944297186 0.04031712182035234 0.05789855239194454 0.07727891993983045 0.0996658460947263 0.12757692995205494 0.16851561559821882]
+=== RUN   TestTurboCodebook_Values/d=768_b=1
+    codebooks_test.go:185: centroids: [-0.02879871186841011 0.028798711868410074]
+=== RUN   TestTurboCodebook_Values/d=768_b=2
+    codebooks_test.go:185: centroids: [-0.05446132722233716 -0.016334003814777367 0.016334005285513563 0.0544613284218315]
+=== RUN   TestTurboCodebook_Values/d=768_b=3
+    codebooks_test.go:185: centroids: [-0.07750452577264685 -0.0484371671993636 -0.027255220749756014 -0.008834275683939916 0.008843077757145214 0.0272635914364712 0.048444665073213204 0.07751061874121623]
+=== RUN   TestTurboCodebook_Values/d=768_b=4
+    codebooks_test.go:185: centroids: [-0.09773962624072723 -0.07385723773294339 -0.05762833596587501 -0.04463863986906993 -0.03340974359808995 -0.023233682219659463 -0.013692306368491992 -0.004494927185696805 0.004592741452341579 0.013788777531487733 0.023327479426531867 0.03349955124075338 0.044723137785267666 0.05770612726050789 0.07392662857128562 0.09779775492623755]
+=== RUN   TestTurboCodebook_Values/d=1024_b=1
+    codebooks_test.go:185: centroids: [-0.024937854401472816 0.024937854401472767]
+=== RUN   TestTurboCodebook_Values/d=1024_b=2
+    codebooks_test.go:185: centroids: [-0.04716876999581887 -0.0141453817343587 0.014145383209598584 0.04716877119957588]
+=== RUN   TestTurboCodebook_Values/d=1024_b=3
+    codebooks_test.go:185: centroids: [-0.0671410466077102 -0.04195404173273997 -0.02360525498406896 -0.007650561854685558 0.007659371425406433 0.02361363384728135 0.041961549155899336 0.06714715130001757]
+=== RUN   TestTurboCodebook_Values/d=1024_b=4
+    codebooks_test.go:185: centroids: [-0.08468769462178066 -0.06398183638452694 -0.04991624062215169 -0.03866067659202175 -0.02893244293818947 -0.020117377431665737 -0.011852790242261338 -0.003886583861812599 0.003984402765794858 0.011949269011313447 0.020211188223694918 0.029022273263411637 0.03874520964675913 0.049994083405835485 0.06405130024166628 0.08474592663945898]
+--- PASS: TestTurboCodebook_Values (0.26s)
+    --- PASS: TestTurboCodebook_Values/d=64_b=1 (0.00s)
+    --- PASS: TestTurboCodebook_Values/d=64_b=2 (0.00s)
+    --- PASS: TestTurboCodebook_Values/d=64_b=3 (0.00s)
+    --- PASS: TestTurboCodebook_Values/d=64_b=4 (0.00s)
+    --- PASS: TestTurboCodebook_Values/d=256_b=1 (0.01s)
+    --- PASS: TestTurboCodebook_Values/d=256_b=2 (0.01s)
+    --- PASS: TestTurboCodebook_Values/d=256_b=3 (0.02s)
+    --- PASS: TestTurboCodebook_Values/d=256_b=4 (0.05s)
+    --- PASS: TestTurboCodebook_Values/d=768_b=1 (0.01s)
+    --- PASS: TestTurboCodebook_Values/d=768_b=2 (0.00s)
+    --- PASS: TestTurboCodebook_Values/d=768_b=3 (0.02s)
+    --- PASS: TestTurboCodebook_Values/d=768_b=4 (0.05s)
+    --- PASS: TestTurboCodebook_Values/d=1024_b=1 (0.01s)
+    --- PASS: TestTurboCodebook_Values/d=1024_b=2 (0.00s)
+    --- PASS: TestTurboCodebook_Values/d=1024_b=3 (0.02s)
+    --- PASS: TestTurboCodebook_Values/d=1024_b=4 (0.05s)
+=== RUN   TestTurboCodebook_Caching
+--- PASS: TestTurboCodebook_Caching (0.02s)
+=== RUN   TestTurboCodebook_Symmetry
+--- PASS: TestTurboCodebook_Symmetry (0.00s)
+=== RUN   TestConcurrentQuantize
+--- PASS: TestConcurrentQuantize (0.00s)
+=== RUN   TestConcurrentQuantize4Bit
+--- PASS: TestConcurrentQuantize4Bit (0.00s)
+=== RUN   TestGoldenScalarQuantize
+=== RUN   TestGoldenScalarQuantize/8bit_basic
+=== RUN   TestGoldenScalarQuantize/4bit_basic
+=== RUN   TestGoldenScalarQuantize/8bit_negative_range
+=== RUN   TestGoldenScalarQuantize/4bit_small_range
+=== RUN   TestGoldenScalarQuantize/8bit_clamp_low
+=== RUN   TestGoldenScalarQuantize/8bit_clamp_high
+=== RUN   TestGoldenScalarQuantize/8bit_single_value
+=== RUN   TestGoldenScalarQuantize/4bit_all_levels
+=== RUN   TestGoldenScalarQuantize/8bit_boundary_values
+=== RUN   TestGoldenScalarQuantize/4bit_negative_values
+=== RUN   TestGoldenScalarQuantize/8bit_fine_range
+=== RUN   TestGoldenScalarQuantize/4bit_odd_length
+--- PASS: TestGoldenScalarQuantize (0.00s)
+    --- PASS: TestGoldenScalarQuantize/8bit_basic (0.00s)
+    --- PASS: TestGoldenScalarQuantize/4bit_basic (0.00s)
+    --- PASS: TestGoldenScalarQuantize/8bit_negative_range (0.00s)
+    --- PASS: TestGoldenScalarQuantize/4bit_small_range (0.00s)
+    --- PASS: TestGoldenScalarQuantize/8bit_clamp_low (0.00s)
+    --- PASS: TestGoldenScalarQuantize/8bit_clamp_high (0.00s)
+    --- PASS: TestGoldenScalarQuantize/8bit_single_value (0.00s)
+    --- PASS: TestGoldenScalarQuantize/4bit_all_levels (0.00s)
+    --- PASS: TestGoldenScalarQuantize/8bit_boundary_values (0.00s)
+    --- PASS: TestGoldenScalarQuantize/4bit_negative_values (0.00s)
+    --- PASS: TestGoldenScalarQuantize/8bit_fine_range (0.00s)
+    --- PASS: TestGoldenScalarQuantize/4bit_odd_length (0.00s)
+=== RUN   TestGoldenScalarQuantizeRoundTrip
+=== RUN   TestGoldenScalarQuantizeRoundTrip/8bit_0_10
+=== RUN   TestGoldenScalarQuantizeRoundTrip/4bit_-5_5
+=== RUN   TestGoldenScalarQuantizeRoundTrip/8bit_0_1
+--- PASS: TestGoldenScalarQuantizeRoundTrip (0.00s)
+    --- PASS: TestGoldenScalarQuantizeRoundTrip/8bit_0_10 (0.00s)
+    --- PASS: TestGoldenScalarQuantizeRoundTrip/4bit_-5_5 (0.00s)
+    --- PASS: TestGoldenScalarQuantizeRoundTrip/8bit_0_1 (0.00s)
+=== RUN   TestGoldenScalarQuantizeErrors
+--- PASS: TestGoldenScalarQuantizeErrors (0.00s)
+=== RUN   TestLloydMax_Uniform
+--- PASS: TestLloydMax_Uniform (0.00s)
+=== RUN   TestLloydMax_Convergence
+    lloydmax_test.go:70: Distortion: 10 iter = 0.03666350, 100 iter = 0.03666330
+--- PASS: TestLloydMax_Convergence (0.01s)
+=== RUN   TestNearestCentroid
+--- PASS: TestNearestCentroid (0.00s)
+=== RUN   TestQuantizeWithCodebook
+--- PASS: TestQuantizeWithCodebook (0.00s)
+=== RUN   TestLloydMax_SingleLevel
+--- PASS: TestLloydMax_SingleLevel (0.00s)
+=== RUN   TestLloydMax_Errors
+--- PASS: TestLloydMax_Errors (0.00s)
+=== RUN   TestSinPowerPDF_Integration
+=== RUN   TestSinPowerPDF_Integration/n=1
+    polar_codebooks_test.go:55: n=1: integral = 0.99999999, expected = 1.00000000 (rel error = 0.000000)
+=== RUN   TestSinPowerPDF_Integration/n=3
+    polar_codebooks_test.go:55: n=3: integral = 0.66666667, expected = 0.66666667 (rel error = 0.000000)
+=== RUN   TestSinPowerPDF_Integration/n=7
+    polar_codebooks_test.go:55: n=7: integral = 0.45714286, expected = 0.45714286 (rel error = 0.000000)
+--- PASS: TestSinPowerPDF_Integration (0.00s)
+    --- PASS: TestSinPowerPDF_Integration/n=1 (0.00s)
+    --- PASS: TestSinPowerPDF_Integration/n=3 (0.00s)
+    --- PASS: TestSinPowerPDF_Integration/n=7 (0.00s)
+=== RUN   TestLevelCodebook_CentroidCount
+=== RUN   TestLevelCodebook_CentroidCount/level=1_n=0_bits=4
+=== RUN   TestLevelCodebook_CentroidCount/level=2_n=1_bits=2
+=== RUN   TestLevelCodebook_CentroidCount/level=3_n=3_bits=2
+=== RUN   TestLevelCodebook_CentroidCount/level=4_n=7_bits=2
+=== RUN   TestLevelCodebook_CentroidCount/level=1_n=0_bits=2
+=== RUN   TestLevelCodebook_CentroidCount/level=1_n=0_bits=3
+--- PASS: TestLevelCodebook_CentroidCount (0.08s)
+    --- PASS: TestLevelCodebook_CentroidCount/level=1_n=0_bits=4 (0.01s)
+    --- PASS: TestLevelCodebook_CentroidCount/level=2_n=1_bits=2 (0.01s)
+    --- PASS: TestLevelCodebook_CentroidCount/level=3_n=3_bits=2 (0.03s)
+    --- PASS: TestLevelCodebook_CentroidCount/level=4_n=7_bits=2 (0.03s)
+    --- PASS: TestLevelCodebook_CentroidCount/level=1_n=0_bits=2 (0.00s)
+    --- PASS: TestLevelCodebook_CentroidCount/level=1_n=0_bits=3 (0.00s)
+=== RUN   TestLevelCodebook_CentroidRange
+=== RUN   TestLevelCodebook_CentroidRange/level1_range
+    polar_codebooks_test.go:114: Level 1 centroids: [0.1963552364669937 0.5890654905213247 0.9817750963481983 1.3744836495110673 1.76719078602698 2.1598961963542065 2.5525996372876234 2.94530094130477 3.338000023003491 3.730696882383787 4.123391604847821 4.5160843579180465 4.908775384799582 5.301464995034164 5.694153552604741 6.086841461947868]
+=== RUN   TestLevelCodebook_CentroidRange/level2_range
+    polar_codebooks_test.go:129: Level 2 centroids: [0.30975637052113686 0.6339803267453528 0.9368160000495355 1.261039956273755]
+=== RUN   TestLevelCodebook_CentroidRange/level3_range
+    polar_codebooks_test.go:143: Level 3 centroids: [0.42625007217394795 0.6743851129167965 0.8964112138781015 1.144546254620951]
+=== RUN   TestLevelCodebook_CentroidRange/level4_range
+    polar_codebooks_test.go:157: Level 4 centroids: [0.524214830545137 0.7059096041008769 0.8648867226940202 1.0465814962497557]
+--- PASS: TestLevelCodebook_CentroidRange (0.00s)
+    --- PASS: TestLevelCodebook_CentroidRange/level1_range (0.00s)
+    --- PASS: TestLevelCodebook_CentroidRange/level2_range (0.00s)
+    --- PASS: TestLevelCodebook_CentroidRange/level3_range (0.00s)
+    --- PASS: TestLevelCodebook_CentroidRange/level4_range (0.00s)
+=== RUN   TestLevelCodebook_Sorted
+=== RUN   TestLevelCodebook_Sorted/level=1
+=== RUN   TestLevelCodebook_Sorted/level=2
+=== RUN   TestLevelCodebook_Sorted/level=3
+=== RUN   TestLevelCodebook_Sorted/level=4
+--- PASS: TestLevelCodebook_Sorted (0.00s)
+    --- PASS: TestLevelCodebook_Sorted/level=1 (0.00s)
+    --- PASS: TestLevelCodebook_Sorted/level=2 (0.00s)
+    --- PASS: TestLevelCodebook_Sorted/level=3 (0.00s)
+    --- PASS: TestLevelCodebook_Sorted/level=4 (0.00s)
+=== RUN   TestPolarSinExponent
+=== RUN   TestPolarSinExponent/level=1
+=== RUN   TestPolarSinExponent/level=2
+=== RUN   TestPolarSinExponent/level=3
+=== RUN   TestPolarSinExponent/level=4
+=== RUN   TestPolarSinExponent/level=5
+--- PASS: TestPolarSinExponent (0.00s)
+    --- PASS: TestPolarSinExponent/level=1 (0.00s)
+    --- PASS: TestPolarSinExponent/level=2 (0.00s)
+    --- PASS: TestPolarSinExponent/level=3 (0.00s)
+    --- PASS: TestPolarSinExponent/level=4 (0.00s)
+    --- PASS: TestPolarSinExponent/level=5 (0.00s)
+=== RUN   TestLevelCodebook_Caching
+--- PASS: TestLevelCodebook_Caching (0.00s)
+=== RUN   TestLevelCodebook_Errors
+=== RUN   TestLevelCodebook_Errors/bits_zero
+=== RUN   TestLevelCodebook_Errors/level_zero
+=== RUN   TestLevelCodebook_Errors/level2_n_zero
+--- PASS: TestLevelCodebook_Errors (0.00s)
+    --- PASS: TestLevelCodebook_Errors/bits_zero (0.00s)
+    --- PASS: TestLevelCodebook_Errors/level_zero (0.00s)
+    --- PASS: TestLevelCodebook_Errors/level2_n_zero (0.00s)
+=== RUN   TestPolarQuantize_Integration_MSE_vs_TurboQuant
+    polar_integration_test.go:85: PolarQuant (3.875 bits/coord): MSE=0.000042
+    polar_integration_test.go:86: TurboQuant (3 bits/coord):   MSE=0.000045
+    polar_integration_test.go:87: TurboQuant (4 bits/coord):   MSE=0.000012
+--- PASS: TestPolarQuantize_Integration_MSE_vs_TurboQuant (2.98s)
+=== RUN   TestPolarQuantize_Integration_CompressionRatio
+    polar_integration_test.go:144: BitsPerCoord:     3.875
+    polar_integration_test.go:145: Original:         6144 bytes
+    polar_integration_test.go:146: Theoretical min:  372 bytes (payload only)
+    polar_integration_test.go:147: Actual compressed: 672 bytes (includes header + float64 radii)
+    polar_integration_test.go:148: Compression:      9.1x
+--- PASS: TestPolarQuantize_Integration_CompressionRatio (0.08s)
+=== RUN   TestPolarQuantize_Integration_NormPreservation_LargeScale
+    polar_integration_test.go:231: Norm preservation over 1000 vectors (dim=768):
+    polar_integration_test.go:232:   Max deviation:  0.0000
+    polar_integration_test.go:233:   Avg deviation:  0.0000
+    polar_integration_test.go:234:   Failures (>15%): 0/1000
+--- PASS: TestPolarQuantize_Integration_NormPreservation_LargeScale (2.03s)
+=== RUN   TestPolarQuantize_Integration_CosineSimilarity
+    polar_integration_test.go:282: Cosine similarity over 1000 vectors (dim=768):
+    polar_integration_test.go:283:   Average: 0.984025
+    polar_integration_test.go:284:   Minimum: 0.980506
+--- PASS: TestPolarQuantize_Integration_CosineSimilarity (2.05s)
+=== RUN   TestPolarQuantize_Integration_MultiDimension
+=== RUN   TestPolarQuantize_Integration_MultiDimension/d=16
+    polar_integration_test.go:352: dim=16 levels=4 bpc=3.875 avg_cosine=0.984284
+=== RUN   TestPolarQuantize_Integration_MultiDimension/d=32
+    polar_integration_test.go:352: dim=32 levels=4 bpc=3.875 avg_cosine=0.983381
+=== RUN   TestPolarQuantize_Integration_MultiDimension/d=64
+    polar_integration_test.go:352: dim=64 levels=4 bpc=3.875 avg_cosine=0.983909
+=== RUN   TestPolarQuantize_Integration_MultiDimension/d=128
+    polar_integration_test.go:352: dim=128 levels=4 bpc=3.875 avg_cosine=0.983413
+=== RUN   TestPolarQuantize_Integration_MultiDimension/d=256
+    polar_integration_test.go:352: dim=256 levels=4 bpc=3.875 avg_cosine=0.984417
+=== RUN   TestPolarQuantize_Integration_MultiDimension/d=512
+    polar_integration_test.go:352: dim=512 levels=4 bpc=3.875 avg_cosine=0.984073
+=== RUN   TestPolarQuantize_Integration_MultiDimension/d=768
+    polar_integration_test.go:352: dim=768 levels=4 bpc=3.875 avg_cosine=0.984097
+--- PASS: TestPolarQuantize_Integration_MultiDimension (0.32s)
+    --- PASS: TestPolarQuantize_Integration_MultiDimension/d=16 (0.00s)
+    --- PASS: TestPolarQuantize_Integration_MultiDimension/d=32 (0.00s)
+    --- PASS: TestPolarQuantize_Integration_MultiDimension/d=64 (0.00s)
+    --- PASS: TestPolarQuantize_Integration_MultiDimension/d=128 (0.01s)
+    --- PASS: TestPolarQuantize_Integration_MultiDimension/d=256 (0.02s)
+    --- PASS: TestPolarQuantize_Integration_MultiDimension/d=512 (0.11s)
+    --- PASS: TestPolarQuantize_Integration_MultiDimension/d=768 (0.18s)
+=== RUN   TestNewPolarQuantizer
+=== RUN   TestNewPolarQuantizer/valid_default_config
+=== RUN   TestNewPolarQuantizer/valid_custom_config
+=== RUN   TestNewPolarQuantizer/defaults_applied
+=== RUN   TestNewPolarQuantizer/dim_too_small
+=== RUN   TestNewPolarQuantizer/dim_not_multiple_of_16
+=== RUN   TestNewPolarQuantizer/dim_not_multiple_of_power
+=== RUN   TestNewPolarQuantizer/invalid_bits_level1
+=== RUN   TestNewPolarQuantizer/invalid_bits_rest
+--- PASS: TestNewPolarQuantizer (0.00s)
+    --- PASS: TestNewPolarQuantizer/valid_default_config (0.00s)
+    --- PASS: TestNewPolarQuantizer/valid_custom_config (0.00s)
+    --- PASS: TestNewPolarQuantizer/defaults_applied (0.00s)
+    --- PASS: TestNewPolarQuantizer/dim_too_small (0.00s)
+    --- PASS: TestNewPolarQuantizer/dim_not_multiple_of_16 (0.00s)
+    --- PASS: TestNewPolarQuantizer/dim_not_multiple_of_power (0.00s)
+    --- PASS: TestNewPolarQuantizer/invalid_bits_level1 (0.00s)
+    --- PASS: TestNewPolarQuantizer/invalid_bits_rest (0.00s)
+=== RUN   TestPolarQuantize_RoundTrip
+=== RUN   TestPolarQuantize_RoundTrip/dim=64
+    polar_test.go:156: dim=64: MSE=0.000431, cosine_similarity=0.986216
+=== RUN   TestPolarQuantize_RoundTrip/dim=256
+    polar_test.go:156: dim=256: MSE=0.000110, cosine_similarity=0.985929
+=== RUN   TestPolarQuantize_RoundTrip/dim=768
+    polar_test.go:156: dim=768: MSE=0.000041, cosine_similarity=0.984402
+--- PASS: TestPolarQuantize_RoundTrip (0.10s)
+    --- PASS: TestPolarQuantize_RoundTrip/dim=64 (0.00s)
+    --- PASS: TestPolarQuantize_RoundTrip/dim=256 (0.01s)
+    --- PASS: TestPolarQuantize_RoundTrip/dim=768 (0.09s)
+=== RUN   TestPolarQuantize_Determinism
+--- PASS: TestPolarQuantize_Determinism (0.00s)
+=== RUN   TestPolarQuantize_DimMismatch
+--- PASS: TestPolarQuantize_DimMismatch (0.00s)
+=== RUN   TestPolarQuantize_ImplementsInterface
+--- PASS: TestPolarQuantize_ImplementsInterface (0.00s)
+=== RUN   TestPolarQuantize_PreservesNorm
+--- PASS: TestPolarQuantize_PreservesNorm (0.00s)
+=== RUN   TestPolarQuantize_Concurrent
+--- PASS: TestPolarQuantize_Concurrent (0.00s)
+=== RUN   TestPolarQuantize_BitEfficiency
+--- PASS: TestPolarQuantize_BitEfficiency (0.00s)
+=== RUN   TestPolarQuantize_NaN
+--- PASS: TestPolarQuantize_NaN (0.00s)
+=== RUN   TestPolarQuantize_SmallDim
+    polar_test.go:435: dim=16: cosine_similarity=0.987798
+--- PASS: TestPolarQuantize_SmallDim (0.00s)
+=== RUN   TestPolarQuantize_ZeroVector
+--- PASS: TestPolarQuantize_ZeroVector (0.00s)
+=== RUN   TestPolarQuantize_MultipleSeeds
+    polar_test.go:510: seed=0: cosine_similarity=0.983671
+    polar_test.go:510: seed=1: cosine_similarity=0.987098
+    polar_test.go:510: seed=2: cosine_similarity=0.978152
+    polar_test.go:510: seed=3: cosine_similarity=0.984510
+    polar_test.go:510: seed=4: cosine_similarity=0.985454
+--- PASS: TestPolarQuantize_MultipleSeeds (0.00s)
+=== RUN   TestPolarQuantize_CustomLevels
+=== RUN   TestPolarQuantize_CustomLevels/dim=32_levels=2
+    polar_test.go:566: cosine_similarity=0.990481
+=== RUN   TestPolarQuantize_CustomLevels/dim=32_levels=3
+    polar_test.go:566: cosine_similarity=0.989301
+=== RUN   TestPolarQuantize_CustomLevels/dim=64_levels=2
+    polar_test.go:566: cosine_similarity=0.984595
+=== RUN   TestPolarQuantize_CustomLevels/dim=64_levels=3
+    polar_test.go:566: cosine_similarity=0.982202
+=== RUN   TestPolarQuantize_CustomLevels/dim=128_levels=2
+    polar_test.go:566: cosine_similarity=0.991360
+--- PASS: TestPolarQuantize_CustomLevels (0.00s)
+    --- PASS: TestPolarQuantize_CustomLevels/dim=32_levels=2 (0.00s)
+    --- PASS: TestPolarQuantize_CustomLevels/dim=32_levels=3 (0.00s)
+    --- PASS: TestPolarQuantize_CustomLevels/dim=64_levels=2 (0.00s)
+    --- PASS: TestPolarQuantize_CustomLevels/dim=64_levels=3 (0.00s)
+    --- PASS: TestPolarQuantize_CustomLevels/dim=128_levels=2 (0.00s)
+=== RUN   TestPolarTransform_RoundTrip
+=== RUN   TestPolarTransform_RoundTrip/dim=16
+    polar_transform_test.go:58: dim=16: relative error = 2.74e-16
+=== RUN   TestPolarTransform_RoundTrip/dim=64
+    polar_transform_test.go:58: dim=64: relative error = 2.83e-16
+=== RUN   TestPolarTransform_RoundTrip/dim=256
+    polar_transform_test.go:58: dim=256: relative error = 2.62e-16
+=== RUN   TestPolarTransform_RoundTrip/dim=768
+    polar_transform_test.go:58: dim=768: relative error = 2.92e-16
+--- PASS: TestPolarTransform_RoundTrip (0.00s)
+    --- PASS: TestPolarTransform_RoundTrip/dim=16 (0.00s)
+    --- PASS: TestPolarTransform_RoundTrip/dim=64 (0.00s)
+    --- PASS: TestPolarTransform_RoundTrip/dim=256 (0.00s)
+    --- PASS: TestPolarTransform_RoundTrip/dim=768 (0.00s)
+=== RUN   TestPolarTransform_LevelSizes
+--- PASS: TestPolarTransform_LevelSizes (0.00s)
+=== RUN   TestPolarTransform_AngleRanges
+--- PASS: TestPolarTransform_AngleRanges (0.00s)
+=== RUN   TestPolarTransform_RadiiNonNegative
+--- PASS: TestPolarTransform_RadiiNonNegative (0.00s)
+=== RUN   TestPolarTransform_NormConservation
+    polar_transform_test.go:222: level 1: Σr² = 57.8249414051, ‖x‖² = 57.8249414051 ✓
+    polar_transform_test.go:222: level 2: Σr² = 57.8249414051, ‖x‖² = 57.8249414051 ✓
+    polar_transform_test.go:222: level 3: Σr² = 57.8249414051, ‖x‖² = 57.8249414051 ✓
+    polar_transform_test.go:222: level 4: Σr² = 57.8249414051, ‖x‖² = 57.8249414051 ✓
+--- PASS: TestPolarTransform_NormConservation (0.00s)
+=== RUN   TestPolarTransform_InvalidDim
+=== RUN   TestPolarTransform_InvalidDim/dim=15_levels=4
+    polar_transform_test.go:254: got expected error: quantize: PolarTransform requires dim=15 to be a multiple of 16 (2^4)
+=== RUN   TestPolarTransform_InvalidDim/dim=17_levels=4
+    polar_transform_test.go:254: got expected error: quantize: PolarTransform requires dim=17 to be a multiple of 16 (2^4)
+=== RUN   TestPolarTransform_InvalidDim/dim=3_levels=2
+    polar_transform_test.go:254: got expected error: quantize: PolarTransform requires dim=3 to be a multiple of 4 (2^2)
+=== RUN   TestPolarTransform_InvalidDim/dim=11_levels=1
+    polar_transform_test.go:254: got expected error: quantize: PolarTransform requires dim=11 to be a multiple of 2 (2^1)
+--- PASS: TestPolarTransform_InvalidDim (0.00s)
+    --- PASS: TestPolarTransform_InvalidDim/dim=15_levels=4 (0.00s)
+    --- PASS: TestPolarTransform_InvalidDim/dim=17_levels=4 (0.00s)
+    --- PASS: TestPolarTransform_InvalidDim/dim=3_levels=2 (0.00s)
+    --- PASS: TestPolarTransform_InvalidDim/dim=11_levels=1 (0.00s)
+=== RUN   TestInversePolarTransform_Errors
+=== RUN   TestInversePolarTransform_Errors/levels_mismatch
+=== RUN   TestInversePolarTransform_Errors/dim_mismatch
+=== RUN   TestInversePolarTransform_Errors/zero_levels
+=== RUN   TestInversePolarTransform_Errors/angle_count_mismatch
+--- PASS: TestInversePolarTransform_Errors (0.00s)
+    --- PASS: TestInversePolarTransform_Errors/levels_mismatch (0.00s)
+    --- PASS: TestInversePolarTransform_Errors/dim_mismatch (0.00s)
+    --- PASS: TestInversePolarTransform_Errors/zero_levels (0.00s)
+    --- PASS: TestInversePolarTransform_Errors/angle_count_mismatch (0.00s)
+=== RUN   TestNewUniformQuantizer
+=== RUN   TestNewUniformQuantizer/8-bit_valid
+=== RUN   TestNewUniformQuantizer/4-bit_valid
+=== RUN   TestNewUniformQuantizer/4-bit_positive_range
+=== RUN   TestNewUniformQuantizer/8-bit_negative_range
+=== RUN   TestNewUniformQuantizer/inverted_range
+=== RUN   TestNewUniformQuantizer/equal_range
+=== RUN   TestNewUniformQuantizer/unsupported_bits_3
+=== RUN   TestNewUniformQuantizer/unsupported_bits_0
+=== RUN   TestNewUniformQuantizer/unsupported_bits_16
+=== RUN   TestNewUniformQuantizer/unsupported_bits_1
+=== RUN   TestNewUniformQuantizer/unsupported_bits_2
+--- PASS: TestNewUniformQuantizer (0.00s)
+    --- PASS: TestNewUniformQuantizer/8-bit_valid (0.00s)
+    --- PASS: TestNewUniformQuantizer/4-bit_valid (0.00s)
+    --- PASS: TestNewUniformQuantizer/4-bit_positive_range (0.00s)
+    --- PASS: TestNewUniformQuantizer/8-bit_negative_range (0.00s)
+    --- PASS: TestNewUniformQuantizer/inverted_range (0.00s)
+    --- PASS: TestNewUniformQuantizer/equal_range (0.00s)
+    --- PASS: TestNewUniformQuantizer/unsupported_bits_3 (0.00s)
+    --- PASS: TestNewUniformQuantizer/unsupported_bits_0 (0.00s)
+    --- PASS: TestNewUniformQuantizer/unsupported_bits_16 (0.00s)
+    --- PASS: TestNewUniformQuantizer/unsupported_bits_1 (0.00s)
+    --- PASS: TestNewUniformQuantizer/unsupported_bits_2 (0.00s)
+=== RUN   TestScalarQuantizeRoundTrip_8bit
+    scalar_test.go:124: 8-bit mean relative error over 1280000 elements: 0.000980 (0.0980% of range)
+--- PASS: TestScalarQuantizeRoundTrip_8bit (0.02s)
+=== RUN   TestScalarQuantizeRoundTrip_4bit
+    scalar_test.go:166: 4-bit boundary: 0.0→0  1.0→1  0.5→0.5333333333333333 (err 3.333333e-02)
+--- PASS: TestScalarQuantizeRoundTrip_4bit (0.00s)
+=== RUN   TestScalarQuantizeRoundTrip_4bit_OddDim
+--- PASS: TestScalarQuantizeRoundTrip_4bit_OddDim (0.00s)
+=== RUN   TestScalarQuantizeDimMismatch
+=== RUN   TestScalarQuantizeDimMismatch/8-bit
+=== RUN   TestScalarQuantizeDimMismatch/4-bit
+--- PASS: TestScalarQuantizeDimMismatch (0.00s)
+    --- PASS: TestScalarQuantizeDimMismatch/8-bit (0.00s)
+    --- PASS: TestScalarQuantizeDimMismatch/4-bit (0.00s)
+=== RUN   TestNaNInput
+=== RUN   TestNaNInput/single_NaN
+=== RUN   TestNaNInput/all_NaN
+=== RUN   TestNaNInput/NaN_at_start
+--- PASS: TestNaNInput (0.00s)
+    --- PASS: TestNaNInput/single_NaN (0.00s)
+    --- PASS: TestNaNInput/all_NaN (0.00s)
+    --- PASS: TestNaNInput/NaN_at_start (0.00s)
+=== RUN   TestInfInput
+--- PASS: TestInfInput (0.00s)
+=== RUN   TestOutOfRangeClamp
+--- PASS: TestOutOfRangeClamp (0.00s)
+=== RUN   TestMaxErrorBound
+=== RUN   TestMaxErrorBound/bits
+=== RUN   TestMaxErrorBound/bits#01
+=== RUN   TestMaxErrorBound/bits#02
+=== RUN   TestMaxErrorBound/bits#03
+--- PASS: TestMaxErrorBound (0.00s)
+    --- PASS: TestMaxErrorBound/bits (0.00s)
+    --- PASS: TestMaxErrorBound/bits#01 (0.00s)
+    --- PASS: TestMaxErrorBound/bits#02 (0.00s)
+    --- PASS: TestMaxErrorBound/bits#03 (0.00s)
+=== RUN   TestMaxErrorBound_Exhaustive
+--- PASS: TestMaxErrorBound_Exhaustive (0.00s)
+=== RUN   TestCompressedVector_SerializationRoundTrip
+=== RUN   TestCompressedVector_SerializationRoundTrip/8-bit_simple
+=== RUN   TestCompressedVector_SerializationRoundTrip/4-bit_simple
+=== RUN   TestCompressedVector_SerializationRoundTrip/4-bit_odd_dimension
+=== RUN   TestCompressedVector_SerializationRoundTrip/8-bit_negative_range
+=== RUN   TestCompressedVector_SerializationRoundTrip/8-bit_large_vector
+=== RUN   TestCompressedVector_SerializationRoundTrip/4-bit_large_vector
+--- PASS: TestCompressedVector_SerializationRoundTrip (0.00s)
+    --- PASS: TestCompressedVector_SerializationRoundTrip/8-bit_simple (0.00s)
+    --- PASS: TestCompressedVector_SerializationRoundTrip/4-bit_simple (0.00s)
+    --- PASS: TestCompressedVector_SerializationRoundTrip/4-bit_odd_dimension (0.00s)
+    --- PASS: TestCompressedVector_SerializationRoundTrip/8-bit_negative_range (0.00s)
+    --- PASS: TestCompressedVector_SerializationRoundTrip/8-bit_large_vector (0.00s)
+    --- PASS: TestCompressedVector_SerializationRoundTrip/4-bit_large_vector (0.00s)
+=== RUN   TestCompressedVector_SerializationCorrupted
+=== RUN   TestCompressedVector_SerializationCorrupted/empty_data
+=== RUN   TestCompressedVector_SerializationCorrupted/only_version_byte
+=== RUN   TestCompressedVector_SerializationCorrupted/truncated_after_version
+=== RUN   TestCompressedVector_SerializationCorrupted/truncated_after_dim
+=== RUN   TestCompressedVector_SerializationCorrupted/truncated_after_min
+=== RUN   TestCompressedVector_SerializationCorrupted/truncated_after_max
+=== RUN   TestCompressedVector_SerializationCorrupted/truncated_after_bitsPer
+=== RUN   TestCompressedVector_SerializationCorrupted/truncated_data_length_prefix
+=== RUN   TestCompressedVector_SerializationCorrupted/truncated_data_payload
+=== RUN   TestCompressedVector_SerializationCorrupted/wrong_version
+=== RUN   TestCompressedVector_SerializationCorrupted/wrong_version_is_ErrUnsupportedVersion
+--- PASS: TestCompressedVector_SerializationCorrupted (0.00s)
+    --- PASS: TestCompressedVector_SerializationCorrupted/empty_data (0.00s)
+    --- PASS: TestCompressedVector_SerializationCorrupted/only_version_byte (0.00s)
+    --- PASS: TestCompressedVector_SerializationCorrupted/truncated_after_version (0.00s)
+    --- PASS: TestCompressedVector_SerializationCorrupted/truncated_after_dim (0.00s)
+    --- PASS: TestCompressedVector_SerializationCorrupted/truncated_after_min (0.00s)
+    --- PASS: TestCompressedVector_SerializationCorrupted/truncated_after_max (0.00s)
+    --- PASS: TestCompressedVector_SerializationCorrupted/truncated_after_bitsPer (0.00s)
+    --- PASS: TestCompressedVector_SerializationCorrupted/truncated_data_length_prefix (0.00s)
+    --- PASS: TestCompressedVector_SerializationCorrupted/truncated_data_payload (0.00s)
+    --- PASS: TestCompressedVector_SerializationCorrupted/wrong_version (0.00s)
+    --- PASS: TestCompressedVector_SerializationCorrupted/wrong_version_is_ErrUnsupportedVersion (0.00s)
+=== RUN   TestCompressedVector_MarshalBinaryEmptyData
+--- PASS: TestCompressedVector_MarshalBinaryEmptyData (0.00s)
+=== RUN   TestCompressedVector_MarshalBinaryIdempotent
+--- PASS: TestCompressedVector_MarshalBinaryIdempotent (0.00s)
+=== RUN   TestTurboQuantize_MSE_TheoreticalBounds
+=== RUN   TestTurboQuantize_MSE_TheoreticalBounds/b=3
+    turbo_integration_test.go:63: bits=3 dim=768 numVecs=1000 MSE=0.000045 (bound=0.03×2.0=0.060)
+=== RUN   TestTurboQuantize_MSE_TheoreticalBounds/b=4
+    turbo_integration_test.go:63: bits=4 dim=768 numVecs=1000 MSE=0.000012 (bound=0.009×2.0=0.018)
+--- PASS: TestTurboQuantize_MSE_TheoreticalBounds (4.02s)
+    --- PASS: TestTurboQuantize_MSE_TheoreticalBounds/b=3 (2.03s)
+    --- PASS: TestTurboQuantize_MSE_TheoreticalBounds/b=4 (1.99s)
+=== RUN   TestTurboQuantize_CompressionRatio
+=== RUN   TestTurboQuantize_CompressionRatio/b=1
+    turbo_integration_test.go:115: bits=1: payload=96 bytes (expected 96), original=6144 bytes, ratio=64.0x
+    turbo_integration_test.go:132: Compression: 6144 bytes → 96 bytes (64.0x)
+=== RUN   TestTurboQuantize_CompressionRatio/b=2
+    turbo_integration_test.go:115: bits=2: payload=192 bytes (expected 192), original=6144 bytes, ratio=32.0x
+    turbo_integration_test.go:132: Compression: 6144 bytes → 192 bytes (32.0x)
+=== RUN   TestTurboQuantize_CompressionRatio/b=3
+    turbo_integration_test.go:115: bits=3: payload=288 bytes (expected 288), original=6144 bytes, ratio=21.3x
+    turbo_integration_test.go:132: Compression: 6144 bytes → 288 bytes (21.3x)
+=== RUN   TestTurboQuantize_CompressionRatio/b=4
+    turbo_integration_test.go:115: bits=4: payload=384 bytes (expected 384), original=6144 bytes, ratio=16.0x
+    turbo_integration_test.go:132: Compression: 6144 bytes → 384 bytes (16.0x)
+--- PASS: TestTurboQuantize_CompressionRatio (0.31s)
+    --- PASS: TestTurboQuantize_CompressionRatio/b=1 (0.08s)
+    --- PASS: TestTurboQuantize_CompressionRatio/b=2 (0.08s)
+    --- PASS: TestTurboQuantize_CompressionRatio/b=3 (0.08s)
+    --- PASS: TestTurboQuantize_CompressionRatio/b=4 (0.08s)
+=== RUN   TestTurboQuantize_NormPreservation
+=== RUN   TestTurboQuantize_NormPreservation/b=2
+    turbo_integration_test.go:186: bits=2: max norm deviation = 0.0913 (tolerance=0.15)
+=== RUN   TestTurboQuantize_NormPreservation/b=3
+    turbo_integration_test.go:186: bits=3: max norm deviation = 0.0501 (tolerance=0.10)
+=== RUN   TestTurboQuantize_NormPreservation/b=4
+    turbo_integration_test.go:186: bits=4: max norm deviation = 0.0242 (tolerance=0.08)
+--- PASS: TestTurboQuantize_NormPreservation (1.38s)
+    --- PASS: TestTurboQuantize_NormPreservation/b=2 (0.47s)
+    --- PASS: TestTurboQuantize_NormPreservation/b=3 (0.45s)
+    --- PASS: TestTurboQuantize_NormPreservation/b=4 (0.46s)
+=== RUN   TestTurboQuantize_vs_ScalarQuantizer
+    turbo_integration_test.go:252: 4-bit comparison (dim=128, numVecs=200):
+    turbo_integration_test.go:253:   TurboQuant_mse MSE:   0.000073
+    turbo_integration_test.go:254:   UniformQuantizer MSE: 0.001482
+    turbo_integration_test.go:255:   Improvement ratio:    20.22x
+    turbo_integration_test.go:282:   8-bit Uniform MSE:    0.000005
+    turbo_integration_test.go:283:   Turbo 4-bit vs Uniform 8-bit ratio: 14.23x
+--- PASS: TestTurboQuantize_vs_ScalarQuantizer (0.06s)
+=== RUN   TestTurboQuantize_MultipleDimensions
+=== RUN   TestTurboQuantize_MultipleDimensions/d=128
+    turbo_integration_test.go:327: dim=128 bits=4 numVecs=50 MSE=0.000074 (max=0.020)
+=== RUN   TestTurboQuantize_MultipleDimensions/d=256
+    turbo_integration_test.go:327: dim=256 bits=4 numVecs=50 MSE=0.000037 (max=0.018)
+=== RUN   TestTurboQuantize_MultipleDimensions/d=512
+    turbo_integration_test.go:327: dim=512 bits=4 numVecs=50 MSE=0.000018 (max=0.016)
+=== RUN   TestTurboQuantize_MultipleDimensions/d=768
+    turbo_integration_test.go:327: dim=768 bits=4 numVecs=50 MSE=0.000012 (max=0.015)
+=== RUN   TestTurboQuantize_MultipleDimensions/d=1024
+    turbo_integration_test.go:327: dim=1024 bits=4 numVecs=50 MSE=0.000009 (max=0.014)
+--- PASS: TestTurboQuantize_MultipleDimensions (0.78s)
+    --- PASS: TestTurboQuantize_MultipleDimensions/d=128 (0.00s)
+    --- PASS: TestTurboQuantize_MultipleDimensions/d=256 (0.02s)
+    --- PASS: TestTurboQuantize_MultipleDimensions/d=512 (0.15s)
+    --- PASS: TestTurboQuantize_MultipleDimensions/d=768 (0.17s)
+    --- PASS: TestTurboQuantize_MultipleDimensions/d=1024 (0.44s)
+=== RUN   TestTurboQuantize_AllBitWidths_Integration
+=== RUN   TestTurboQuantize_AllBitWidths_Integration/b=1
+    turbo_integration_test.go:377: bits=1 dim=256 numVecs=500 MSE=0.001414 (max=0.450)
+=== RUN   TestTurboQuantize_AllBitWidths_Integration/b=2
+    turbo_integration_test.go:377: bits=2 dim=256 numVecs=500 MSE=0.000454 (max=0.150)
+=== RUN   TestTurboQuantize_AllBitWidths_Integration/b=3
+    turbo_integration_test.go:377: bits=3 dim=256 numVecs=500 MSE=0.000133 (max=0.050)
+=== RUN   TestTurboQuantize_AllBitWidths_Integration/b=4
+    turbo_integration_test.go:377: bits=4 dim=256 numVecs=500 MSE=0.000037 (max=0.015)
+--- PASS: TestTurboQuantize_AllBitWidths_Integration (0.41s)
+    --- PASS: TestTurboQuantize_AllBitWidths_Integration/b=1 (0.10s)
+    --- PASS: TestTurboQuantize_AllBitWidths_Integration/b=2 (0.10s)
+    --- PASS: TestTurboQuantize_AllBitWidths_Integration/b=3 (0.10s)
+    --- PASS: TestTurboQuantize_AllBitWidths_Integration/b=4 (0.11s)
+=== RUN   TestTurboProd_IPUnbiased_LargeScale
+    turbo_prod_integration_test.go:58: 5000 pairs: avg true IP = -0.001755, avg estimated IP = -0.001346, |bias| = 0.000409
+--- PASS: TestTurboProd_IPUnbiased_LargeScale (0.60s)
+=== RUN   TestTurboProd_Vs_MSE_Only
+    turbo_prod_integration_test.go:144: TurboQuant_prod (2-bit MSE + 1-bit QJL): avg |IP error|=0.029601, |bias|=0.001259
+    turbo_prod_integration_test.go:145: TurboQuant_mse  (2-bit MSE only):         avg |IP error|=0.024857, |bias|=0.000149
+    turbo_prod_integration_test.go:149: Absolute error ratio (mse/prod): 0.84x
+    turbo_prod_integration_test.go:150: Bias ratio (mse/prod):           0.12x
+--- PASS: TestTurboProd_Vs_MSE_Only (0.32s)
+=== RUN   TestTurboProd_CompressionRatio
+=== RUN   TestTurboProd_CompressionRatio/d=128_b=2
+    turbo_prod_integration_test.go:205: dim=128 bits=2: compressed=53 bytes, original=1024 bytes, ratio=19.3x, effective=3.31 bits/coord
+=== RUN   TestTurboProd_CompressionRatio/d=128_b=3
+    turbo_prod_integration_test.go:205: dim=128 bits=3: compressed=69 bytes, original=1024 bytes, ratio=14.8x, effective=4.31 bits/coord
+=== RUN   TestTurboProd_CompressionRatio/d=128_b=4
+    turbo_prod_integration_test.go:205: dim=128 bits=4: compressed=85 bytes, original=1024 bytes, ratio=12.0x, effective=5.31 bits/coord
+=== RUN   TestTurboProd_CompressionRatio/d=768_b=3
+    turbo_prod_integration_test.go:205: dim=768 bits=3: compressed=309 bytes, original=6144 bytes, ratio=19.9x, effective=3.22 bits/coord
+=== RUN   TestTurboProd_CompressionRatio/d=768_b=4
+    turbo_prod_integration_test.go:205: dim=768 bits=4: compressed=405 bytes, original=6144 bytes, ratio=15.2x, effective=4.22 bits/coord
+--- PASS: TestTurboProd_CompressionRatio (0.18s)
+    --- PASS: TestTurboProd_CompressionRatio/d=128_b=2 (0.01s)
+    --- PASS: TestTurboProd_CompressionRatio/d=128_b=3 (0.00s)
+    --- PASS: TestTurboProd_CompressionRatio/d=128_b=4 (0.00s)
+    --- PASS: TestTurboProd_CompressionRatio/d=768_b=3 (0.09s)
+    --- PASS: TestTurboProd_CompressionRatio/d=768_b=4 (0.09s)
+=== RUN   TestTurboProd_MultiBitWidths
+=== RUN   TestTurboProd_MultiBitWidths/bits=2
+    turbo_prod_integration_test.go:265: bits=2: avg |IP error| = 0.058315
+=== RUN   TestTurboProd_MultiBitWidths/bits=3
+    turbo_prod_integration_test.go:265: bits=3: avg |IP error| = 0.030607
+=== RUN   TestTurboProd_MultiBitWidths/bits=4
+    turbo_prod_integration_test.go:265: bits=4: avg |IP error| = 0.015550
+--- PASS: TestTurboProd_MultiBitWidths (0.18s)
+    --- PASS: TestTurboProd_MultiBitWidths/bits=2 (0.06s)
+    --- PASS: TestTurboProd_MultiBitWidths/bits=3 (0.06s)
+    --- PASS: TestTurboProd_MultiBitWidths/bits=4 (0.06s)
+=== RUN   TestTurboProd_MultiDimensions
+=== RUN   TestTurboProd_MultiDimensions/d=64
+    turbo_prod_integration_test.go:324: dim=64 bits=3: avg |IP error| = 0.045432, bias = 0.002498
+=== RUN   TestTurboProd_MultiDimensions/d=128
+    turbo_prod_integration_test.go:324: dim=128 bits=3: avg |IP error| = 0.033607, bias = -0.004223
+=== RUN   TestTurboProd_MultiDimensions/d=256
+    turbo_prod_integration_test.go:324: dim=256 bits=3: avg |IP error| = 0.020755, bias = 0.000502
+=== RUN   TestTurboProd_MultiDimensions/d=512
+    turbo_prod_integration_test.go:324: dim=512 bits=3: avg |IP error| = 0.015119, bias = 0.000734
+=== RUN   TestTurboProd_MultiDimensions/d=768
+    turbo_prod_integration_test.go:324: dim=768 bits=3: avg |IP error| = 0.012292, bias = -0.000068
+--- PASS: TestTurboProd_MultiDimensions (1.78s)
+    --- PASS: TestTurboProd_MultiDimensions/d=64 (0.01s)
+    --- PASS: TestTurboProd_MultiDimensions/d=128 (0.02s)
+    --- PASS: TestTurboProd_MultiDimensions/d=256 (0.10s)
+    --- PASS: TestTurboProd_MultiDimensions/d=512 (0.64s)
+    --- PASS: TestTurboProd_MultiDimensions/d=768 (1.01s)
+=== RUN   TestNewTurboProdQuantizer
+=== RUN   TestNewTurboProdQuantizer/valid_construction
+=== RUN   TestNewTurboProdQuantizer/valid_with_reduced_sketchDim
+=== RUN   TestNewTurboProdQuantizer/invalid_dim
+=== RUN   TestNewTurboProdQuantizer/invalid_bits
+=== RUN   TestNewTurboProdQuantizer/invalid_sketchDim
+=== RUN   TestNewTurboProdQuantizer/all_valid_bit_widths
+--- PASS: TestNewTurboProdQuantizer (0.00s)
+    --- PASS: TestNewTurboProdQuantizer/valid_construction (0.00s)
+    --- PASS: TestNewTurboProdQuantizer/valid_with_reduced_sketchDim (0.00s)
+    --- PASS: TestNewTurboProdQuantizer/invalid_dim (0.00s)
+    --- PASS: TestNewTurboProdQuantizer/invalid_bits (0.00s)
+    --- PASS: TestNewTurboProdQuantizer/invalid_sketchDim (0.00s)
+    --- PASS: TestNewTurboProdQuantizer/all_valid_bit_widths (0.00s)
+=== RUN   TestTurboProd_QuantizeDequantize
+--- PASS: TestTurboProd_QuantizeDequantize (0.00s)
+=== RUN   TestTurboProd_ResidualComputation
+--- PASS: TestTurboProd_ResidualComputation (0.00s)
+=== RUN   TestTurboProd_IPUnbiased
+    turbo_prod_test.go:269: avg true IP = -0.001666, avg estimated IP = -0.003042, bias = 0.001375
+--- PASS: TestTurboProd_IPUnbiased (0.12s)
+=== RUN   TestTurboProd_IPAccuracy
+    turbo_prod_test.go:325: trial 0: true=0.6872 est=0.6816 err=0.0056
+    turbo_prod_test.go:325: trial 1: true=0.7254 est=0.7149 err=0.0105
+    turbo_prod_test.go:325: trial 2: true=0.6544 est=0.6608 err=0.0064
+    turbo_prod_test.go:325: trial 3: true=0.5883 est=0.5955 err=0.0072
+    turbo_prod_test.go:325: trial 4: true=0.6397 est=0.6365 err=0.0032
+    turbo_prod_test.go:325: trial 5: true=0.6578 est=0.6698 err=0.0120
+    turbo_prod_test.go:325: trial 6: true=0.7073 est=0.7145 err=0.0073
+    turbo_prod_test.go:325: trial 7: true=0.7052 est=0.7114 err=0.0062
+    turbo_prod_test.go:325: trial 8: true=0.6604 est=0.6677 err=0.0073
+    turbo_prod_test.go:325: trial 9: true=0.6032 est=0.6058 err=0.0026
+    turbo_prod_test.go:325: trial 10: true=0.6689 est=0.6871 err=0.0182
+    turbo_prod_test.go:325: trial 11: true=0.5983 est=0.6075 err=0.0092
+    turbo_prod_test.go:325: trial 12: true=0.6028 est=0.5598 err=0.0430
+    turbo_prod_test.go:325: trial 13: true=0.6331 est=0.6310 err=0.0022
+    turbo_prod_test.go:325: trial 14: true=0.6259 est=0.5979 err=0.0280
+    turbo_prod_test.go:325: trial 15: true=0.6661 est=0.6615 err=0.0046
+    turbo_prod_test.go:325: trial 16: true=0.6002 est=0.5914 err=0.0088
+    turbo_prod_test.go:325: trial 17: true=0.6391 est=0.6202 err=0.0189
+    turbo_prod_test.go:325: trial 18: true=0.6587 est=0.6595 err=0.0008
+    turbo_prod_test.go:325: trial 19: true=0.6409 est=0.6468 err=0.0059
+--- PASS: TestTurboProd_IPAccuracy (0.00s)
+=== RUN   TestTurboProd_Determinism
+--- PASS: TestTurboProd_Determinism (0.00s)
+=== RUN   TestTurboProd_Concurrent
+--- PASS: TestTurboProd_Concurrent (0.00s)
+=== RUN   TestTurboProd_ImplementsInterface
+--- PASS: TestTurboProd_ImplementsInterface (0.01s)
+=== RUN   TestTurboProd_NaNInput
+--- PASS: TestTurboProd_NaNInput (0.00s)
+=== RUN   TestTurboProd_DimMismatch
+=== RUN   TestTurboProd_DimMismatch/wrong_dimension_input
+=== RUN   TestTurboProd_DimMismatch/wrong_dimension_compressed_vector
+=== RUN   TestTurboProd_DimMismatch/wrong_bits_in_compressed_vector
+=== RUN   TestTurboProd_DimMismatch/wrong_query_dimension_for_IP
+--- PASS: TestTurboProd_DimMismatch (0.00s)
+    --- PASS: TestTurboProd_DimMismatch/wrong_dimension_input (0.00s)
+    --- PASS: TestTurboProd_DimMismatch/wrong_dimension_compressed_vector (0.00s)
+    --- PASS: TestTurboProd_DimMismatch/wrong_bits_in_compressed_vector (0.00s)
+    --- PASS: TestTurboProd_DimMismatch/wrong_query_dimension_for_IP (0.00s)
+=== RUN   TestTurboProd_ParseProdVector
+--- PASS: TestTurboProd_ParseProdVector (0.00s)
+=== RUN   TestTurboProd_MultipleBitWidths
+=== RUN   TestTurboProd_MultipleBitWidths/bits=2
+    turbo_prod_test.go:637: bits=2: avg MSE=0.005446
+=== RUN   TestTurboProd_MultipleBitWidths/bits=3
+    turbo_prod_test.go:637: bits=3: avg MSE=0.001689
+=== RUN   TestTurboProd_MultipleBitWidths/bits=4
+    turbo_prod_test.go:637: bits=4: avg MSE=0.000474
+--- PASS: TestTurboProd_MultipleBitWidths (0.00s)
+    --- PASS: TestTurboProd_MultipleBitWidths/bits=2 (0.00s)
+    --- PASS: TestTurboProd_MultipleBitWidths/bits=3 (0.00s)
+    --- PASS: TestTurboProd_MultipleBitWidths/bits=4 (0.00s)
+=== RUN   TestNewTurboQuantizer
+=== RUN   TestNewTurboQuantizer/valid_construction
+=== RUN   TestNewTurboQuantizer/invalid_dim
+=== RUN   TestNewTurboQuantizer/invalid_dim/zero
+=== RUN   TestNewTurboQuantizer/invalid_dim/negative
+=== RUN   TestNewTurboQuantizer/invalid_dim/one
+=== RUN   TestNewTurboQuantizer/invalid_bits
+=== RUN   TestNewTurboQuantizer/invalid_bits/zero
+=== RUN   TestNewTurboQuantizer/invalid_bits/negative
+=== RUN   TestNewTurboQuantizer/invalid_bits/five
+=== RUN   TestNewTurboQuantizer/invalid_bits/eight
+--- PASS: TestNewTurboQuantizer (0.00s)
+    --- PASS: TestNewTurboQuantizer/valid_construction (0.00s)
+    --- PASS: TestNewTurboQuantizer/invalid_dim (0.00s)
+        --- PASS: TestNewTurboQuantizer/invalid_dim/zero (0.00s)
+        --- PASS: TestNewTurboQuantizer/invalid_dim/negative (0.00s)
+        --- PASS: TestNewTurboQuantizer/invalid_dim/one (0.00s)
+    --- PASS: TestNewTurboQuantizer/invalid_bits (0.00s)
+        --- PASS: TestNewTurboQuantizer/invalid_bits/zero (0.00s)
+        --- PASS: TestNewTurboQuantizer/invalid_bits/negative (0.00s)
+        --- PASS: TestNewTurboQuantizer/invalid_bits/five (0.00s)
+        --- PASS: TestNewTurboQuantizer/invalid_bits/eight (0.00s)
+=== RUN   TestTurboQuantize_RoundTrip_1bit
+    turbo_test.go:118: bits=1 dim=128 numVecs=50 MSE=0.002817
+--- PASS: TestTurboQuantize_RoundTrip_1bit (0.00s)
+=== RUN   TestTurboQuantize_RoundTrip_2bit
+    turbo_test.go:122: bits=2 dim=128 numVecs=50 MSE=0.000889
+--- PASS: TestTurboQuantize_RoundTrip_2bit (0.00s)
+=== RUN   TestTurboQuantize_RoundTrip_3bit
+    turbo_test.go:126: bits=3 dim=128 numVecs=50 MSE=0.000267
+--- PASS: TestTurboQuantize_RoundTrip_3bit (0.00s)
+=== RUN   TestTurboQuantize_RoundTrip_4bit
+    turbo_test.go:130: bits=4 dim=128 numVecs=50 MSE=0.000074
+--- PASS: TestTurboQuantize_RoundTrip_4bit (0.00s)
+=== RUN   TestTurboQuantize_Determinism
+--- PASS: TestTurboQuantize_Determinism (0.00s)
+=== RUN   TestTurboQuantize_DimMismatch
+=== RUN   TestTurboQuantize_DimMismatch/wrong_dimension_input
+=== RUN   TestTurboQuantize_DimMismatch/wrong_dimension_compressed_vector
+=== RUN   TestTurboQuantize_DimMismatch/wrong_bits_in_compressed_vector
+--- PASS: TestTurboQuantize_DimMismatch (0.00s)
+    --- PASS: TestTurboQuantize_DimMismatch/wrong_dimension_input (0.00s)
+    --- PASS: TestTurboQuantize_DimMismatch/wrong_dimension_compressed_vector (0.00s)
+    --- PASS: TestTurboQuantize_DimMismatch/wrong_bits_in_compressed_vector (0.00s)
+=== RUN   TestTurboQuantize_PreservesNorm
+--- PASS: TestTurboQuantize_PreservesNorm (0.00s)
+=== RUN   TestTurboQuantize_ImplementsInterface
+--- PASS: TestTurboQuantize_ImplementsInterface (0.05s)
+=== RUN   TestPackUnpackIndices
+=== RUN   TestPackUnpackIndices/bits=1_n=8
+=== RUN   TestPackUnpackIndices/bits=2_n=8
+=== RUN   TestPackUnpackIndices/bits=3_n=8
+=== RUN   TestPackUnpackIndices/bits=4_n=8
+=== RUN   TestPackUnpackIndices/bits=1_n=2
+=== RUN   TestPackUnpackIndices/bits=2_n=1
+=== RUN   TestPackUnpackIndices/bits=3_n=4
+=== RUN   TestPackUnpackIndices/bits=4_n=4
+--- PASS: TestPackUnpackIndices (0.00s)
+    --- PASS: TestPackUnpackIndices/bits=1_n=8 (0.00s)
+    --- PASS: TestPackUnpackIndices/bits=2_n=8 (0.00s)
+    --- PASS: TestPackUnpackIndices/bits=3_n=8 (0.00s)
+    --- PASS: TestPackUnpackIndices/bits=4_n=8 (0.00s)
+    --- PASS: TestPackUnpackIndices/bits=1_n=2 (0.00s)
+    --- PASS: TestPackUnpackIndices/bits=2_n=1 (0.00s)
+    --- PASS: TestPackUnpackIndices/bits=3_n=4 (0.00s)
+    --- PASS: TestPackUnpackIndices/bits=4_n=4 (0.00s)
+=== RUN   TestPackUnpackIndices_EdgeCases
+=== RUN   TestPackUnpackIndices_EdgeCases/empty
+=== RUN   TestPackUnpackIndices_EdgeCases/single_index
+=== RUN   TestPackUnpackIndices_EdgeCases/large_number_of_indices
+--- PASS: TestPackUnpackIndices_EdgeCases (0.00s)
+    --- PASS: TestPackUnpackIndices_EdgeCases/empty (0.00s)
+    --- PASS: TestPackUnpackIndices_EdgeCases/single_index (0.00s)
+    --- PASS: TestPackUnpackIndices_EdgeCases/large_number_of_indices (0.00s)
+=== RUN   TestTurboQuantize_Concurrent
+--- PASS: TestTurboQuantize_Concurrent (0.00s)
+=== RUN   TestTurboQuantize_NaNInput
+--- PASS: TestTurboQuantize_NaNInput (0.00s)
+=== RUN   TestTurboQuantize_RotationMatrix
+--- PASS: TestTurboQuantize_RotationMatrix (0.05s)
+=== RUN   FuzzScalarQuantize
+=== RUN   FuzzScalarQuantize/seed#0
+=== RUN   FuzzScalarQuantize/seed#1
+=== RUN   FuzzScalarQuantize/seed#2
+=== RUN   FuzzScalarQuantize/seed#3
+=== RUN   FuzzScalarQuantize/seed#4
+=== RUN   FuzzScalarQuantize/seed#5
+=== RUN   FuzzScalarQuantize/seed#6
+=== RUN   FuzzScalarQuantize/seed#7
+=== RUN   FuzzScalarQuantize/seed#8
+=== RUN   FuzzScalarQuantize/seed#9
+=== RUN   FuzzScalarQuantize/seed#10
+=== RUN   FuzzScalarQuantize/seed#11
+=== RUN   FuzzScalarQuantize/seed#12
+=== RUN   FuzzScalarQuantize/seed#13
+=== RUN   FuzzScalarQuantize/seed#14
+--- PASS: FuzzScalarQuantize (0.00s)
+    --- PASS: FuzzScalarQuantize/seed#0 (0.00s)
+    --- PASS: FuzzScalarQuantize/seed#1 (0.00s)
+    --- PASS: FuzzScalarQuantize/seed#2 (0.00s)
+    --- PASS: FuzzScalarQuantize/seed#3 (0.00s)
+    --- PASS: FuzzScalarQuantize/seed#4 (0.00s)
+    --- PASS: FuzzScalarQuantize/seed#5 (0.00s)
+    --- PASS: FuzzScalarQuantize/seed#6 (0.00s)
+    --- PASS: FuzzScalarQuantize/seed#7 (0.00s)
+    --- PASS: FuzzScalarQuantize/seed#8 (0.00s)
+    --- PASS: FuzzScalarQuantize/seed#9 (0.00s)
+    --- PASS: FuzzScalarQuantize/seed#10 (0.00s)
+    --- PASS: FuzzScalarQuantize/seed#11 (0.00s)
+    --- PASS: FuzzScalarQuantize/seed#12 (0.00s)
+    --- PASS: FuzzScalarQuantize/seed#13 (0.00s)
+    --- PASS: FuzzScalarQuantize/seed#14 (0.00s)
+PASS
+ok  	github.com/user/turboquant/quantize	18.810s
+=== RUN   TestGoldenFWHT
+=== RUN   TestGoldenFWHT/dim4
+=== RUN   TestGoldenFWHT/dim1
+=== RUN   TestGoldenFWHT/dim2
+=== RUN   TestGoldenFWHT/dim2_neg
+=== RUN   TestGoldenFWHT/dim8
+=== RUN   TestGoldenFWHT/dim4_zeros
+=== RUN   TestGoldenFWHT/dim4_all_ones
+=== RUN   TestGoldenFWHT/dim8_mixed
+--- PASS: TestGoldenFWHT (0.00s)
+    --- PASS: TestGoldenFWHT/dim4 (0.00s)
+    --- PASS: TestGoldenFWHT/dim1 (0.00s)
+    --- PASS: TestGoldenFWHT/dim2 (0.00s)
+    --- PASS: TestGoldenFWHT/dim2_neg (0.00s)
+    --- PASS: TestGoldenFWHT/dim8 (0.00s)
+    --- PASS: TestGoldenFWHT/dim4_zeros (0.00s)
+    --- PASS: TestGoldenFWHT/dim4_all_ones (0.00s)
+    --- PASS: TestGoldenFWHT/dim8_mixed (0.00s)
+=== RUN   TestGoldenFWHTEdgeCases
+--- PASS: TestGoldenFWHTEdgeCases (0.00s)
+=== RUN   TestGoldenIsPowerOfTwo
+--- PASS: TestGoldenIsPowerOfTwo (0.00s)
+=== RUN   TestFWHT_KnownResult
+--- PASS: TestFWHT_KnownResult (0.00s)
+=== RUN   TestFWHT_SingleElement
+--- PASS: TestFWHT_SingleElement (0.00s)
+=== RUN   TestFWHT_NonPowerOf2
+=== RUN   TestFWHT_NonPowerOf2/length_0
+=== RUN   TestFWHT_NonPowerOf2/length_3
+=== RUN   TestFWHT_NonPowerOf2/length_5
+=== RUN   TestFWHT_NonPowerOf2/length_6
+=== RUN   TestFWHT_NonPowerOf2/length_7
+=== RUN   TestFWHT_NonPowerOf2/length_9
+=== RUN   TestFWHT_NonPowerOf2/length_10
+=== RUN   TestFWHT_NonPowerOf2/length_100
+--- PASS: TestFWHT_NonPowerOf2 (0.00s)
+    --- PASS: TestFWHT_NonPowerOf2/length_0 (0.00s)
+    --- PASS: TestFWHT_NonPowerOf2/length_3 (0.00s)
+    --- PASS: TestFWHT_NonPowerOf2/length_5 (0.00s)
+    --- PASS: TestFWHT_NonPowerOf2/length_6 (0.00s)
+    --- PASS: TestFWHT_NonPowerOf2/length_7 (0.00s)
+    --- PASS: TestFWHT_NonPowerOf2/length_9 (0.00s)
+    --- PASS: TestFWHT_NonPowerOf2/length_10 (0.00s)
+    --- PASS: TestFWHT_NonPowerOf2/length_100 (0.00s)
+=== RUN   TestFWHT_Zeros
+=== RUN   TestFWHT_Zeros/dim=1
+=== RUN   TestFWHT_Zeros/dim=2
+=== RUN   TestFWHT_Zeros/dim=4
+=== RUN   TestFWHT_Zeros/dim=8
+=== RUN   TestFWHT_Zeros/dim=16
+=== RUN   TestFWHT_Zeros/dim=64
+=== RUN   TestFWHT_Zeros/dim=256
+=== RUN   TestFWHT_Zeros/dim=1024
+--- PASS: TestFWHT_Zeros (0.00s)
+    --- PASS: TestFWHT_Zeros/dim=1 (0.00s)
+    --- PASS: TestFWHT_Zeros/dim=2 (0.00s)
+    --- PASS: TestFWHT_Zeros/dim=4 (0.00s)
+    --- PASS: TestFWHT_Zeros/dim=8 (0.00s)
+    --- PASS: TestFWHT_Zeros/dim=16 (0.00s)
+    --- PASS: TestFWHT_Zeros/dim=64 (0.00s)
+    --- PASS: TestFWHT_Zeros/dim=256 (0.00s)
+    --- PASS: TestFWHT_Zeros/dim=1024 (0.00s)
+=== RUN   TestFWHT_AgainstNaive
+=== RUN   TestFWHT_AgainstNaive/dim=2
+=== RUN   TestFWHT_AgainstNaive/dim=4
+=== RUN   TestFWHT_AgainstNaive/dim=8
+=== RUN   TestFWHT_AgainstNaive/dim=16
+=== RUN   TestFWHT_AgainstNaive/dim=256
+=== RUN   TestFWHT_AgainstNaive/dim=1024
+--- PASS: TestFWHT_AgainstNaive (0.00s)
+    --- PASS: TestFWHT_AgainstNaive/dim=2 (0.00s)
+    --- PASS: TestFWHT_AgainstNaive/dim=4 (0.00s)
+    --- PASS: TestFWHT_AgainstNaive/dim=8 (0.00s)
+    --- PASS: TestFWHT_AgainstNaive/dim=16 (0.00s)
+    --- PASS: TestFWHT_AgainstNaive/dim=256 (0.00s)
+    --- PASS: TestFWHT_AgainstNaive/dim=1024 (0.00s)
+=== RUN   TestIsPowerOfTwo
+=== RUN   TestIsPowerOfTwo/-1
+=== RUN   TestIsPowerOfTwo/0
+=== RUN   TestIsPowerOfTwo/1
+=== RUN   TestIsPowerOfTwo/2
+=== RUN   TestIsPowerOfTwo/3
+=== RUN   TestIsPowerOfTwo/4
+=== RUN   TestIsPowerOfTwo/5
+=== RUN   TestIsPowerOfTwo/6
+=== RUN   TestIsPowerOfTwo/7
+=== RUN   TestIsPowerOfTwo/8
+=== RUN   TestIsPowerOfTwo/16
+=== RUN   TestIsPowerOfTwo/256
+=== RUN   TestIsPowerOfTwo/1024
+=== RUN   TestIsPowerOfTwo/1023
+=== RUN   TestIsPowerOfTwo/1025
+--- PASS: TestIsPowerOfTwo (0.00s)
+    --- PASS: TestIsPowerOfTwo/-1 (0.00s)
+    --- PASS: TestIsPowerOfTwo/0 (0.00s)
+    --- PASS: TestIsPowerOfTwo/1 (0.00s)
+    --- PASS: TestIsPowerOfTwo/2 (0.00s)
+    --- PASS: TestIsPowerOfTwo/3 (0.00s)
+    --- PASS: TestIsPowerOfTwo/4 (0.00s)
+    --- PASS: TestIsPowerOfTwo/5 (0.00s)
+    --- PASS: TestIsPowerOfTwo/6 (0.00s)
+    --- PASS: TestIsPowerOfTwo/7 (0.00s)
+    --- PASS: TestIsPowerOfTwo/8 (0.00s)
+    --- PASS: TestIsPowerOfTwo/16 (0.00s)
+    --- PASS: TestIsPowerOfTwo/256 (0.00s)
+    --- PASS: TestIsPowerOfTwo/1024 (0.00s)
+    --- PASS: TestIsPowerOfTwo/1023 (0.00s)
+    --- PASS: TestIsPowerOfTwo/1025 (0.00s)
+=== RUN   TestOrthogonalMatrixUnitarity
+=== RUN   TestOrthogonalMatrixUnitarity/#00
+=== RUN   TestOrthogonalMatrixUnitarity/#01
+=== RUN   TestOrthogonalMatrixUnitarity/#02
+=== RUN   TestOrthogonalMatrixUnitarity/#03
+=== RUN   TestOrthogonalMatrixUnitarity/#04
+--- PASS: TestOrthogonalMatrixUnitarity (0.01s)
+    --- PASS: TestOrthogonalMatrixUnitarity/#00 (0.00s)
+    --- PASS: TestOrthogonalMatrixUnitarity/#01 (0.00s)
+    --- PASS: TestOrthogonalMatrixUnitarity/#02 (0.00s)
+    --- PASS: TestOrthogonalMatrixUnitarity/#03 (0.00s)
+    --- PASS: TestOrthogonalMatrixUnitarity/#04 (0.01s)
+=== RUN   TestOrthogonalDeterminism
+=== RUN   TestOrthogonalDeterminism/#00
+=== RUN   TestOrthogonalDeterminism/#01
+=== RUN   TestOrthogonalDeterminism/#02
+=== RUN   TestOrthogonalDeterminism/#03
+=== RUN   TestOrthogonalDeterminism/#04
+--- PASS: TestOrthogonalDeterminism (0.02s)
+    --- PASS: TestOrthogonalDeterminism/#00 (0.00s)
+    --- PASS: TestOrthogonalDeterminism/#01 (0.00s)
+    --- PASS: TestOrthogonalDeterminism/#02 (0.00s)
+    --- PASS: TestOrthogonalDeterminism/#03 (0.00s)
+    --- PASS: TestOrthogonalDeterminism/#04 (0.01s)
+=== RUN   TestOrthogonal_InvalidDim
+=== RUN   TestOrthogonal_InvalidDim/dim=0
+=== RUN   TestOrthogonal_InvalidDim/dim=-1
+=== RUN   TestOrthogonal_InvalidDim/dim=-100
+--- PASS: TestOrthogonal_InvalidDim (0.00s)
+    --- PASS: TestOrthogonal_InvalidDim/dim=0 (0.00s)
+    --- PASS: TestOrthogonal_InvalidDim/dim=-1 (0.00s)
+    --- PASS: TestOrthogonal_InvalidDim/dim=-100 (0.00s)
+=== RUN   TestOrthogonal_NilRng
+--- PASS: TestOrthogonal_NilRng (0.00s)
+PASS
+ok  	github.com/user/turboquant/rotate	0.387s
+=== RUN   TestConcurrentSketchSameVector
+--- PASS: TestConcurrentSketchSameVector (0.00s)
+=== RUN   TestConcurrentHamming
+--- PASS: TestConcurrentHamming (0.00s)
+=== RUN   TestGoldenQJLSketch
+=== RUN   TestGoldenQJLSketch/zero_vector
+=== RUN   TestGoldenQJLSketch/unit_basis_0
+=== RUN   TestGoldenQJLSketch/all_ones
+=== RUN   TestGoldenQJLSketch/mixed_vector
+=== RUN   TestGoldenQJLSketch/with_outliers
+=== RUN   TestGoldenQJLSketch/large_vector
+--- PASS: TestGoldenQJLSketch (0.00s)
+    --- PASS: TestGoldenQJLSketch/zero_vector (0.00s)
+    --- PASS: TestGoldenQJLSketch/unit_basis_0 (0.00s)
+    --- PASS: TestGoldenQJLSketch/all_ones (0.00s)
+    --- PASS: TestGoldenQJLSketch/mixed_vector (0.00s)
+    --- PASS: TestGoldenQJLSketch/with_outliers (0.00s)
+    --- PASS: TestGoldenQJLSketch/large_vector (0.00s)
+=== RUN   TestGoldenQJLSketchSerialization
+--- PASS: TestGoldenQJLSketchSerialization (0.00s)
+=== RUN   TestGoldenQJLSketchErrors
+--- PASS: TestGoldenQJLSketchErrors (0.00s)
+=== RUN   TestHammingDistance_Identical
+--- PASS: TestHammingDistance_Identical (0.00s)
+=== RUN   TestHammingDistance_Complementary
+--- PASS: TestHammingDistance_Complementary (0.00s)
+=== RUN   TestHammingDistance_Symmetry
+--- PASS: TestHammingDistance_Symmetry (0.00s)
+=== RUN   TestHammingDistance_Mismatch
+--- PASS: TestHammingDistance_Mismatch (0.00s)
+=== RUN   TestHammingDistanceSafe_Mismatch
+--- PASS: TestHammingDistanceSafe_Mismatch (0.00s)
+=== RUN   TestHammingDistanceSafe_Identical
+--- PASS: TestHammingDistanceSafe_Identical (0.00s)
+=== RUN   TestEstimateInnerProduct_Accuracy
+--- PASS: TestEstimateInnerProduct_Accuracy (0.32s)
+=== RUN   TestEstimateInnerProduct_Orthogonal
+--- PASS: TestEstimateInnerProduct_Orthogonal (0.00s)
+=== RUN   TestEstimateInnerProduct_Mismatch
+--- PASS: TestEstimateInnerProduct_Mismatch (0.00s)
+=== RUN   TestGaussianProjection_Determinism
+--- PASS: TestGaussianProjection_Determinism (0.00s)
+=== RUN   TestGaussianProjection_InvalidDims
+=== RUN   TestGaussianProjection_InvalidDims/source_zero
+=== RUN   TestGaussianProjection_InvalidDims/source_negative
+=== RUN   TestGaussianProjection_InvalidDims/target_zero
+=== RUN   TestGaussianProjection_InvalidDims/target_negative
+=== RUN   TestGaussianProjection_InvalidDims/target_exceeds_source
+--- PASS: TestGaussianProjection_InvalidDims (0.00s)
+    --- PASS: TestGaussianProjection_InvalidDims/source_zero (0.00s)
+    --- PASS: TestGaussianProjection_InvalidDims/source_negative (0.00s)
+    --- PASS: TestGaussianProjection_InvalidDims/target_zero (0.00s)
+    --- PASS: TestGaussianProjection_InvalidDims/target_negative (0.00s)
+    --- PASS: TestGaussianProjection_InvalidDims/target_exceeds_source (0.00s)
+=== RUN   TestGaussianProjection_Project
+--- PASS: TestGaussianProjection_Project (0.00s)
+=== RUN   TestGaussianProjection_JLProperty
+--- PASS: TestGaussianProjection_JLProperty (0.01s)
+=== RUN   TestSRHT_Determinism
+--- PASS: TestSRHT_Determinism (0.00s)
+=== RUN   TestSRHT_TargetExceedsSource
+--- PASS: TestSRHT_TargetExceedsSource (0.00s)
+=== RUN   TestSRHT_NonPowerOf2
+--- PASS: TestSRHT_NonPowerOf2 (0.00s)
+=== RUN   TestSRHT_JLProperty
+--- PASS: TestSRHT_JLProperty (0.00s)
+=== RUN   TestNewQJLSketcher
+=== RUN   TestNewQJLSketcher/valid_gaussian
+=== RUN   TestNewQJLSketcher/valid_SRHT_power-of-2
+=== RUN   TestNewQJLSketcher/valid_dim_equals_sketchDim
+=== RUN   TestNewQJLSketcher/dim_zero
+=== RUN   TestNewQJLSketcher/dim_negative
+=== RUN   TestNewQJLSketcher/sketchDim_zero
+=== RUN   TestNewQJLSketcher/sketchDim_negative
+=== RUN   TestNewQJLSketcher/sketchDim_exceeds_dim
+=== RUN   TestNewQJLSketcher/valid_with_outlier
+=== RUN   TestNewQJLSketcher/outlierK_negative
+--- PASS: TestNewQJLSketcher (0.00s)
+    --- PASS: TestNewQJLSketcher/valid_gaussian (0.00s)
+    --- PASS: TestNewQJLSketcher/valid_SRHT_power-of-2 (0.00s)
+    --- PASS: TestNewQJLSketcher/valid_dim_equals_sketchDim (0.00s)
+    --- PASS: TestNewQJLSketcher/dim_zero (0.00s)
+    --- PASS: TestNewQJLSketcher/dim_negative (0.00s)
+    --- PASS: TestNewQJLSketcher/sketchDim_zero (0.00s)
+    --- PASS: TestNewQJLSketcher/sketchDim_negative (0.00s)
+    --- PASS: TestNewQJLSketcher/sketchDim_exceeds_dim (0.00s)
+    --- PASS: TestNewQJLSketcher/valid_with_outlier (0.00s)
+    --- PASS: TestNewQJLSketcher/outlierK_negative (0.00s)
+=== RUN   TestQJLSketch_HappyPath
+--- PASS: TestQJLSketch_HappyPath (0.00s)
+=== RUN   TestQJLSketch_ZeroVector
+--- PASS: TestQJLSketch_ZeroVector (0.00s)
+=== RUN   TestQJLSketch_DimMismatch
+--- PASS: TestQJLSketch_DimMismatch (0.00s)
+=== RUN   TestQJLDeterminism
+--- PASS: TestQJLDeterminism (0.00s)
+=== RUN   TestConcurrentSketch
+--- PASS: TestConcurrentSketch (0.00s)
+=== RUN   TestOutlierHandling_K8
+--- PASS: TestOutlierHandling_K8 (0.00s)
+=== RUN   TestOutlierHandling_K0
+--- PASS: TestOutlierHandling_K0 (0.00s)
+=== RUN   TestOutlierHandling_ExceedsSketchDim
+--- PASS: TestOutlierHandling_ExceedsSketchDim (0.00s)
+=== RUN   TestQJLRankingPreservation
+    qjl_test.go:528: recall@10 = 1.0000 (min required: 0.95)
+--- PASS: TestQJLRankingPreservation (3.24s)
+=== RUN   TestSerialization_BitVectorRoundTrip
+=== RUN   TestSerialization_BitVectorRoundTrip/simple
+=== RUN   TestSerialization_BitVectorRoundTrip/multi_word
+=== RUN   TestSerialization_BitVectorRoundTrip/non_multiple_of_64
+=== RUN   TestSerialization_BitVectorRoundTrip/with_outliers
+=== RUN   TestSerialization_BitVectorRoundTrip/empty_bits
+--- PASS: TestSerialization_BitVectorRoundTrip (0.00s)
+    --- PASS: TestSerialization_BitVectorRoundTrip/simple (0.00s)
+    --- PASS: TestSerialization_BitVectorRoundTrip/multi_word (0.00s)
+    --- PASS: TestSerialization_BitVectorRoundTrip/non_multiple_of_64 (0.00s)
+    --- PASS: TestSerialization_BitVectorRoundTrip/with_outliers (0.00s)
+    --- PASS: TestSerialization_BitVectorRoundTrip/empty_bits (0.00s)
+=== RUN   TestSerialization_UnknownVersion
+--- PASS: TestSerialization_UnknownVersion (0.00s)
+=== RUN   TestSerialization_TruncatedData
+--- PASS: TestSerialization_TruncatedData (0.00s)
+=== RUN   TestSerialization_IntegrationWithQJL
+--- PASS: TestSerialization_IntegrationWithQJL (0.00s)
+=== RUN   TestQJLSketch_SRHT
+--- PASS: TestQJLSketch_SRHT (0.00s)
+=== RUN   FuzzQJLSketch
+=== RUN   FuzzQJLSketch/seed#0
+=== RUN   FuzzQJLSketch/seed#1
+=== RUN   FuzzQJLSketch/seed#2
+=== RUN   FuzzQJLSketch/seed#3
+=== RUN   FuzzQJLSketch/seed#4
+=== RUN   FuzzQJLSketch/seed#5
+=== RUN   FuzzQJLSketch/seed#6
+=== RUN   FuzzQJLSketch/seed#7
+--- PASS: FuzzQJLSketch (0.00s)
+    --- PASS: FuzzQJLSketch/seed#0 (0.00s)
+    --- PASS: FuzzQJLSketch/seed#1 (0.00s)
+    --- PASS: FuzzQJLSketch/seed#2 (0.00s)
+    --- PASS: FuzzQJLSketch/seed#3 (0.00s)
+    --- PASS: FuzzQJLSketch/seed#4 (0.00s)
+    --- PASS: FuzzQJLSketch/seed#5 (0.00s)
+    --- PASS: FuzzQJLSketch/seed#6 (0.00s)
+    --- PASS: FuzzQJLSketch/seed#7 (0.00s)
+PASS
+ok  	github.com/user/turboquant/sketch	3.999s
