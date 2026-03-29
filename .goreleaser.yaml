@@ -85,7 +85,7 @@ changelog:
       - "^docs"
       - "^test"
       - "^ci"
-      - "^chore\(deps\)"
+      - "^chore\\(deps\\)"
 
 brews:
   - repository:
