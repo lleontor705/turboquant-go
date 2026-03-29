@@ -12,10 +12,10 @@
 
 **turboquant** es una librería Go que implementa los algoritmos de compresión vectorial más avanzados de la literatura de investigación, incluyendo:
 
-- **PolarQuant** (arXiv:2502.02617, AISTATS 2026) — Descomposición polar recursiva con cuantización independiente por nivel. Alcanza 9.1× de compresión con similaritud coseno de 0.984.
-- **TurboQuant_mse** (arXiv:2504.19874, ICLR 2026) — Rotación aleatoria + cuantización Lloyd-Max con codebooks Beta(d). Hasta 21.3× de compresión.
+- **PolarQuant** (arXiv:2502.02617, AISTATS 2026) — Descomposición polar recursiva con cuantización independiente por nivel. Almacena la norma original y reescala al decodificar para mayor fidelidad. Alcanza 9.1× de compresión con similaritud coseno de 0.984.
+- **TurboQuant_mse** (arXiv:2504.19874, ICLR 2026) — Rotación aleatoria + cuantización Lloyd-Max con codebooks Beta(d). Almacena la norma original y reescala al decodificar. Hasta 21.3× de compresión.
 - **QJL Sketching** (arXiv:2406.03482) — Proyección Johnson-Lindenstrauss + cuantización a 1 bit. 192× de compresión con estimación de similaritud vía distancia Hamming.
-- **TurboQuant_prod** (arXiv:2504.19874, ICLR 2026) — Dos etapas: cuantización MSE + sketch QJL del residual. **ÚNICO algoritmo con estimación de inner product UNBIASED** — E[estimate] = IP verdadero. Ideal para ANN search.
+- **TurboQuant_prod** (arXiv:2504.19874, ICLR 2026) — Dos etapas: cuantización MSE + sketch QJL del residual. Almacena la norma original y reescala al decodificar. **ÚNICO algoritmo con estimación de inner product UNBIASED** — E[estimate] = IP verdadero. Ideal para ANN search.
 - **Cuantización Escalar Uniforme** — Línea base de 4-bit y 8-bit con empaquetamiento de nibbles.
 
 ### ¿Por qué Go?
@@ -60,12 +60,16 @@ Requiere Go 1.24+. Única dependencia externa: [gonum](https://gonum.org/).
 | **Scalar** 8-bit | 8 | 8× | 0.098% | — | 2.9 µs |
 
 > Benchmarks en AMD Ryzen 7 5800X3D, Go 1.24, Windows/amd64.
+>
+> Nota: PolarQuant ahora almacena radios en `uint16`, lo que acerca la compresión efectiva a los ratios teóricos.
 
 ---
 
 ## Quick Start — PolarQuant (recomendado)
 
-PolarQuant ofrece la mejor calidad de reconstrucción por bit. Usa descomposición polar recursiva que factoriza la distribución conjunta, haciendo la cuantización independiente por nivel óptima (no una aproximación).
+PolarQuant ofrece la mejor calidad de reconstrucción por bit. Usa descomposición polar recursiva que factoriza la distribución conjunta, haciendo la cuantización independiente por nivel óptima (no una aproximación). La norma original se guarda y se reescala en la reconstrucción para preservar magnitud.
+
+**Radii en 16-bit:** los radios finales se almacenan como `uint16` (RadiusBits=16), reduciendo el overhead frente a `float64` y acercando los ratios a los valores teóricos.
 
 ```go
 package main
@@ -126,7 +130,7 @@ func main() {
 
 ## Quick Start — TurboQuant_mse
 
-TurboQuant aplica una rotación aleatoria seguida de cuantización Lloyd-Max usando codebooks derivados de la distribución Beta. Más simple que PolarQuant, con excelente ratio compresión/calidad.
+TurboQuant aplica una rotación aleatoria seguida de cuantización Lloyd-Max usando codebooks derivados de la distribución Beta. Más simple que PolarQuant, con excelente ratio compresión/calidad. Almacena la norma original del vector y reescala al decodificar.
 
 ```go
 package main
@@ -176,7 +180,7 @@ func main() {
 
 **TurboQuant_prod es el ÚNICO algoritmo que proporciona estimación de inner product UNBIASED** — E[estimate] = IP verdadero. Esto es crítico para ANN search donde el ranking precisa ser preciso.
 
-Combina dos etapas: cuantización MSE (b-1 bits) para reconstrucción + sketch QJL de 1 bit del residual para corrección de inner product. La corrección QJL compensa el error de cuantización MSE, produciendo un estimador insesgado.
+Combina dos etapas: cuantización MSE (b-1 bits) para reconstrucción + sketch QJL de 1 bit del residual para corrección de inner product. La corrección QJL compensa el error de cuantización MSE, produciendo un estimador insesgado. La norma original se almacena y se reescala durante la dequantización.
 
 ```go
 package main
@@ -325,15 +329,18 @@ func main() {
 }
 ```
 
-**Con manejo de outliers** — almacenar las K proyecciones más grandes en precisión completa:
+**Con manejo de outliers** — OutlierK se reemplaza por `OutlierIndices`, que fija los canales a almacenar en precisión completa (misma configuración entre vectores):
 
 ```go
 sketcher, _ := sketch.NewQJLSketcher(sketch.QJLOptions{
-    Dim:       768,
-    SketchDim: 256,
-    Seed:      42,
-    OutlierK:  16, // 16 proyecciones outlier en precisión completa
+    Dim:            768,
+    SketchDim:      256,
+    Seed:           42,
+    OutlierIndices: []int{0, 3, 7, 12, 25, 40, 64, 96, 128, 160, 192, 200, 210, 220, 230, 240},
 })
+
+// Nota: OutlierK está deprecado; úsalo solo si necesitas top-K dinámico
+// (selección automática de las K proyecciones de mayor magnitud).
 ```
 
 **Con SRHT** — proyecciones O(n log n) (requiere que Dim sea potencia de 2):
@@ -462,9 +469,27 @@ turboquant-go/
 
 ---
 
+## Documentación
+
+- [`docs/OVERVIEW.md`](docs/OVERVIEW.md) — visión general y comparación de algoritmos
+- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — estructura, flujo de datos y wire formats
+- [`docs/USAGE.md`](docs/USAGE.md) — ejemplos mínimos por algoritmo
+- [`docs/FAQ.md`](docs/FAQ.md) — preguntas frecuentes
+
+---
+
 ## Benchmarks
 
 Medidos en AMD Ryzen 7 5800X3D, Go 1.24, Windows/amd64.
+
+> Ejecuta benchmarks con:
+>
+> ```bash
+> go test ./... -bench=. -benchmem
+> ```
+>
+> Los resultados reflejan las métricas actuales tras los fixes de fidelidad
+> (norma almacenada y radii en `uint16` en PolarQuant).
 
 ### Operaciones Core
 
@@ -498,7 +523,7 @@ Medidos en AMD Ryzen 7 5800X3D, Go 1.24, Windows/amd64.
 | Configuración | Tiempo | Allocs |
 |--------------|--------|--------|
 | Sin outliers | **251 µs** | 4 |
-| Con outliers (K=16) | **258 µs** | 10 |
+| Con outliers (índices fijos, 16) | **258 µs** | 10 |
 
 ### Hamming Distance
 
@@ -633,7 +658,7 @@ type PolarConfig struct {
     Levels     int   // niveles de descomposición polar (default: 4)
     BitsLevel1 int   // bits para ángulos nivel-1 (default: 4)
     BitsRest   int   // bits para ángulos niveles 2..L (default: 2)
-    RadiusBits int   // bits para radios finales (default: 16, tipo FP16)
+    RadiusBits int   // bits para radios finales (default: 16 → se almacenan como uint16)
     Seed       int64 // semilla aleatoria
 }
 
@@ -646,7 +671,7 @@ func (c PolarConfig) BitsPerCoord() float64
 ```go
 type PolarVector struct {
     AngleIndices [][]int   // índices de ángulos por nivel
-    Radii        []float64 // radios del nivel final (d/2^L valores)
+    Radii        []uint16  // radios del nivel final (d/2^L valores)
     Dim          int       // dimensión original
     BitsPerLevel []int     // bits por nivel [4, 2, 2, 2]
 }
@@ -694,7 +719,8 @@ type QJLOptions struct {
     Dim       int   // dimensión del vector de entrada (> 0)
     SketchDim int   // dimensión del sketch / salida (> 0, <= Dim)
     Seed      int64 // semilla aleatoria
-    OutlierK  int   // proyecciones outlier en precisión completa (0 = desactivado)
+    OutlierK  int   // DEPRECATED: usar OutlierIndices para índices fijos
+    OutlierIndices []int // índices fijos almacenados en precisión completa
     UseSRHT   bool  // usar SRHT en lugar de Gaussiana (requiere Dim potencia de 2)
 }
 ```
@@ -711,8 +737,8 @@ func (s *QJLSketcher) SketchDim() int
 type BitVector struct {
     Bits           []uint64   // bits empaquetados, longitud (Dim+63)/64
     Dim            int        // número de bits significativos
-    OutlierIndices []int      // índices de outliers (nil si OutlierK=0)
-    OutlierValues  []float64  // valores de outliers (nil si OutlierK=0)
+    OutlierIndices []int      // índices de outliers (nil si no se usan)
+    OutlierValues  []float64  // valores de outliers (nil si no se usan)
 }
 ```
 
@@ -737,7 +763,7 @@ func EstimateInnerProduct(a, b BitVector) (float64, error)
 |-------|-------------|
 | `ErrDimensionMismatch` | Dimensiones de BitVector no coinciden |
 | `ErrInvalidDimension` | Dimensión <= 0 o inválida |
-| `ErrInvalidConfiguration` | OutlierK > SketchDim |
+| `ErrInvalidConfiguration` | Config inválida: OutlierK > SketchDim o índices fuera de rango/duplicados |
 
 #### Proyectores (Avanzado)
 
