@@ -6,7 +6,7 @@
       "dim": 8,
       "sketch_dim": 4,
       "seed": 42,
-      "outlier_k": 0,
+      "outlier_indices": null,
       "input": [
         0,
         0,
@@ -25,7 +25,7 @@
       "dim": 8,
       "sketch_dim": 4,
       "seed": 42,
-      "outlier_k": 0,
+      "outlier_indices": null,
       "input": [
         1,
         0,
@@ -44,7 +44,7 @@
       "dim": 8,
       "sketch_dim": 8,
       "seed": 42,
-      "outlier_k": 0,
+      "outlier_indices": null,
       "input": [
         1,
         1,
@@ -63,7 +63,7 @@
       "dim": 8,
       "sketch_dim": 4,
       "seed": 123,
-      "outlier_k": 0,
+      "outlier_indices": null,
       "input": [
         1,
         -2,
@@ -82,7 +82,10 @@
       "dim": 8,
       "sketch_dim": 4,
       "seed": 42,
-      "outlier_k": 2,
+      "outlier_indices": [
+        0,
+        2
+      ],
       "input": [
         1,
         -2,
@@ -93,7 +96,7 @@
         2,
         -1
       ],
-      "expected_bit_count": 1,
+      "expected_bit_count": 0,
       "expected_dim": 4
     },
     {
@@ -101,7 +104,7 @@
       "dim": 16,
       "sketch_dim": 8,
       "seed": 99,
-      "outlier_k": 0,
+      "outlier_indices": null,
       "input": [
         1,
         2,

@@ -72,11 +72,12 @@ func TestTurboQuantize_MSE_TheoreticalBounds(t *testing.T) {
 }
 
 // TestTurboQuantize_CompressionRatio verifies that the compressed representation
-// uses the expected number of bits: dim × bits_per_coordinate.
+// uses the expected number of bits: dim × bits_per_coordinate plus the wire header.
 //
 // For d=768, b=3: total bits = 768×3 = 2304 → ⌈2304/8⌉ = 288 bytes payload.
+// Wire format adds 9 bytes (version + norm), so payload = 288 + 9 = 297 bytes.
 // Original float64: 768×8 = 6144 bytes.
-// Compression ratio: 6144 / 288 ≈ 21.3x.
+// Compression ratio: 6144 / 297 ≈ 20.7x.
 func TestTurboQuantize_CompressionRatio(t *testing.T) {
 	const dim = 768
 
@@ -84,10 +85,10 @@ func TestTurboQuantize_CompressionRatio(t *testing.T) {
 		bits            int
 		expectedPayload int // expected compressed data size in bytes
 	}{
-		{1, (768*1 + 7) / 8}, // 96 bytes
-		{2, (768*2 + 7) / 8}, // 192 bytes
-		{3, (768*3 + 7) / 8}, // 288 bytes
-		{4, (768*4 + 7) / 8}, // 384 bytes
+		{1, 9 + (768*1+7)/8}, // 96 bytes + header
+		{2, 9 + (768*2+7)/8}, // 192 bytes + header
+		{3, 9 + (768*3+7)/8}, // 288 bytes + header
+		{4, 9 + (768*4+7)/8}, // 384 bytes + header
 	}
 
 	for _, tt := range tests {

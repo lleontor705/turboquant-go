@@ -206,7 +206,7 @@ func TestTurboProd_CompressionRatio(t *testing.T) {
 				tt.dim, tt.bits, compressedBytes, originalBytes, ratio, effectiveBits)
 
 			// The effective bits per coordinate should be roughly the configured bits
-			// plus overhead from the wire format header (~17 bytes) and QJL sketch.
+			// plus overhead from the wire format header (~25 bytes) and QJL sketch.
 			// Allow generous tolerance.
 			minEffective := float64(tt.bits) * 0.5
 			maxEffective := float64(tt.bits) * 3.0

@@ -12,7 +12,7 @@ import (
 )
 
 // prodWireVersion is the wire format version for TurboQuant_prod data.
-const prodWireVersion byte = 1
+const prodWireVersion byte = 2
 
 // TurboProdQuantizer implements the TurboQuant_prod algorithm (arXiv:2504.19874):
 // two-stage quantization: MSE quantization (b-1 bits) + QJL 1-bit sketch of residual.
@@ -45,6 +45,8 @@ type ProdVector struct {
 	Residual sketch.BitVector
 	// ResidualNorm is γ = ||x - x̂_mse||₂.
 	ResidualNorm float64
+	// Norm is the original vector norm (||x||₂).
+	Norm float64
 	// Dim is the original vector dimension.
 	Dim int
 	// Bits is the effective bits per coordinate.
@@ -167,6 +169,10 @@ func (tpq *TurboProdQuantizer) Quantize(vec []float64) (CompressedVector, error)
 		gamma += residual[i] * residual[i]
 	}
 	gamma = math.Sqrt(gamma)
+	// Scale residual norm to match original vector magnitude.
+	if norm != 0 {
+		gamma *= norm
+	}
 
 	// QJL: project residual, sign-quantize, and pack into bits.
 	sketchBits, err := tpq.sketchResidual(residual)
@@ -175,7 +181,7 @@ func (tpq *TurboProdQuantizer) Quantize(vec []float64) (CompressedVector, error)
 	}
 
 	// Pack into CompressedVector wire format.
-	data, err := encodeProdWire(tpq.sketchDim, gamma, mseCV.Data, sketchBits)
+	data, err := encodeProdWire(tpq.sketchDim, norm, gamma, mseCV.Data, sketchBits)
 	if err != nil {
 		return CompressedVector{}, fmt.Errorf("turbo_prod: wire encode failed: %w", err)
 	}
@@ -216,7 +222,16 @@ func (tpq *TurboProdQuantizer) Dequantize(cv CompressedVector) ([]float64, error
 		Max:     1.0,
 		BitsPer: tpq.bits - 1,
 	}
-	return tpq.mseQuant.Dequantize(mseCV)
+	unit, err := tpq.mseQuant.Dequantize(mseCV)
+	if err != nil {
+		return nil, err
+	}
+	if pd.norm != 1.0 {
+		for i := range unit {
+			unit[i] *= pd.norm
+		}
+	}
+	return unit, nil
 }
 
 // EstimateInnerProduct estimates ⟨query, x⟩ from encoded representations.
@@ -258,7 +273,7 @@ func (tpq *TurboProdQuantizer) EstimateInnerProduct(query []float64, cv Compress
 		return 0, fmt.Errorf("turbo_prod: decode failed: %w", err)
 	}
 
-	// MSE dequantize.
+	// MSE dequantize (unit norm reconstruction).
 	mseCV := CompressedVector{
 		Data:    pd.mseData,
 		Dim:     tpq.dim,
@@ -271,11 +286,12 @@ func (tpq *TurboProdQuantizer) EstimateInnerProduct(query []float64, cv Compress
 		return 0, fmt.Errorf("turbo_prod: MSE dequantize failed: %w", err)
 	}
 
-	// MSE inner product: dot(query, x̂_mse).
+	// MSE inner product: dot(query, x̂_mse) scaled by original norm.
 	ipMse := 0.0
 	for i := range query {
 		ipMse += query[i] * xHat[i]
 	}
+	ipMse *= pd.norm
 
 	// If residual norm is zero (perfect MSE quantization), no correction needed.
 	if pd.gamma == 0 {
@@ -336,6 +352,7 @@ func (tpq *TurboProdQuantizer) ParseProdVector(cv CompressedVector) (ProdVector,
 			Dim:  tpq.sketchDim,
 		},
 		ResidualNorm: pd.gamma,
+		Norm:         pd.norm,
 		Dim:          tpq.dim,
 		Bits:         tpq.bits,
 	}, nil
@@ -389,6 +406,7 @@ func (tpq *TurboProdQuantizer) sketchResidual(residual []float64) ([]uint64, err
 //
 //	[1:  version = prodWireVersion]
 //	[4:  sketchDim as uint32]
+//	[8:  originalNorm as float64]
 //	[8:  residualNorm (gamma) as float64]
 //	[4:  mseDataLen as uint32]
 //	[mseDataLen: MSE packed index bytes]
@@ -398,12 +416,13 @@ func (tpq *TurboProdQuantizer) sketchResidual(residual []float64) ([]uint64, err
 // prodWireData holds the decoded wire format fields.
 type prodWireData struct {
 	sketchDim  int
+	norm       float64
 	gamma      float64
 	mseData    []byte
 	sketchBits []uint64
 }
 
-func encodeProdWire(sketchDim int, gamma float64, mseData []byte, sketchBits []uint64) ([]byte, error) {
+func encodeProdWire(sketchDim int, norm float64, gamma float64, mseData []byte, sketchBits []uint64) ([]byte, error) {
 	buf := new(bytes.Buffer)
 	var tmp4 [4]byte
 	var tmp8 [8]byte
@@ -417,6 +436,12 @@ func encodeProdWire(sketchDim int, gamma float64, mseData []byte, sketchBits []u
 	binary.LittleEndian.PutUint32(tmp4[:], uint32(sketchDim))
 	if _, err := buf.Write(tmp4[:]); err != nil {
 		return nil, fmt.Errorf("turbo_prod: encode sketchDim: %w", err)
+	}
+
+	// Norm.
+	binary.LittleEndian.PutUint64(tmp8[:], math.Float64bits(norm))
+	if _, err := buf.Write(tmp8[:]); err != nil {
+		return nil, fmt.Errorf("turbo_prod: encode norm: %w", err)
 	}
 
 	// Gamma (residual norm).
@@ -470,6 +495,12 @@ func decodeProdWire(data []byte) (prodWireData, error) {
 	}
 	sketchDim := int(binary.LittleEndian.Uint32(tmp4[:]))
 
+	// Norm.
+	if _, err := io.ReadFull(r, tmp8[:]); err != nil {
+		return prodWireData{}, fmt.Errorf("turbo_prod: decode norm: %w", err)
+	}
+	norm := math.Float64frombits(binary.LittleEndian.Uint64(tmp8[:]))
+
 	// Gamma.
 	if _, err := io.ReadFull(r, tmp8[:]); err != nil {
 		return prodWireData{}, fmt.Errorf("turbo_prod: decode gamma: %w", err)
@@ -503,6 +534,7 @@ func decodeProdWire(data []byte) (prodWireData, error) {
 
 	return prodWireData{
 		sketchDim:  sketchDim,
+		norm:       norm,
 		gamma:      gamma,
 		mseData:    mseData,
 		sketchBits: sketchBits,

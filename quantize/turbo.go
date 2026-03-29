@@ -1,7 +1,10 @@
 package quantize
 
 import (
+	"bytes"
+	"encoding/binary"
 	"fmt"
+	"io"
 	"math"
 	"math/rand"
 
@@ -31,6 +34,9 @@ type TurboQuantizer struct {
 	rotation *mat.Dense // random orthogonal matrix (dim × dim)
 	codebook []float64  // precomputed centroids
 }
+
+// turboWireVersion is the wire format version for TurboQuant_mse data.
+const turboWireVersion byte = 1
 
 // NewTurboQuantizer creates a TurboQuant_mse quantizer.
 //
@@ -114,8 +120,9 @@ func (tq *TurboQuantizer) Quantize(vec []float64) (CompressedVector, error) {
 	// Quantize each coordinate: idx_j = argmin_k |y_j - c_k|
 	indices := QuantizeWithCodebook(rotated, tq.codebook)
 
-	// Pack indices into bytes.
-	data := packIndices(indices, tq.bits)
+	// Pack indices into bytes and store wire format.
+	packed := packIndices(indices, tq.bits)
+	data := encodeTurboWire(norm, packed)
 
 	return CompressedVector{
 		Data:    data,
@@ -139,8 +146,12 @@ func (tq *TurboQuantizer) Dequantize(cv CompressedVector) ([]float64, error) {
 			ErrDimensionMismatch, tq.bits, cv.BitsPer)
 	}
 
-	// Unpack indices.
-	indices := unpackIndices(cv.Data, tq.dim, tq.bits)
+	// Decode wire format and unpack indices.
+	norm, packed, err := decodeTurboWire(cv.Data)
+	if err != nil {
+		return nil, fmt.Errorf("turbo: decode wire format failed: %w", err)
+	}
+	indices := unpackIndices(packed, tq.dim, tq.bits)
 
 	// Look up centroids: ỹ_j = c[idx_j]
 	centroids := make([]float64, tq.dim)
@@ -161,6 +172,13 @@ func (tq *TurboQuantizer) Dequantize(cv CompressedVector) ([]float64, error) {
 			sum += tq.rotation.At(j, i) * centroids[j]
 		}
 		result[i] = sum
+	}
+
+	// Re-apply original norm.
+	if norm != 1.0 {
+		for i := range result {
+			result[i] *= norm
+		}
 	}
 
 	return result, nil
@@ -241,4 +259,47 @@ func unpackIndices(data []byte, n int, bits int) []int {
 	}
 
 	return indices
+}
+
+// ---------------------------------------------------------------------------
+// Wire format for TurboQuant_mse compressed data
+// ---------------------------------------------------------------------------
+//
+// Layout (little-endian):
+//
+//	[version:1B] [norm:8B float64] [packed indices: bytes]
+
+func encodeTurboWire(norm float64, packed []byte) []byte {
+	var buf bytes.Buffer
+	var tmp8 [8]byte
+
+	buf.WriteByte(turboWireVersion)
+	binary.LittleEndian.PutUint64(tmp8[:], math.Float64bits(norm))
+	buf.Write(tmp8[:])
+	buf.Write(packed)
+
+	return buf.Bytes()
+}
+
+func decodeTurboWire(data []byte) (float64, []byte, error) {
+	r := bytes.NewReader(data)
+	ver, err := r.ReadByte()
+	if err != nil {
+		return 0, nil, fmt.Errorf("reading version: %w", err)
+	}
+	if ver != turboWireVersion {
+		return 0, nil, fmt.Errorf("unsupported version %d", ver)
+	}
+	var tmp8 [8]byte
+	if _, err := io.ReadFull(r, tmp8[:]); err != nil {
+		return 0, nil, fmt.Errorf("reading norm: %w", err)
+	}
+	norm := math.Float64frombits(binary.LittleEndian.Uint64(tmp8[:]))
+	packed := make([]byte, r.Len())
+	if len(packed) > 0 {
+		if _, err := io.ReadFull(r, packed); err != nil {
+			return 0, nil, fmt.Errorf("reading packed data: %w", err)
+		}
+	}
+	return norm, packed, nil
 }

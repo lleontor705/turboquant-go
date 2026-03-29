@@ -103,8 +103,8 @@ func TestPolarQuantize_Integration_MSE_vs_TurboQuant(t *testing.T) {
 //
 //	BitsPerCoord = (4*d/2 + 2*d/4 + 2*d/8 + 2*d/16 + 16*d/16) / d = 3.875
 //
-// The wire format includes a small header and stores radii as float64 (8 bytes
-// each), so the actual compressed size exceeds the theoretical minimum.
+// The wire format includes a small header and stores radii as uint16 (2 bytes
+// each), so the actual compressed size is closer to the theoretical minimum.
 func TestPolarQuantize_Integration_CompressionRatio(t *testing.T) {
 	const dim = 768
 	cfg := DefaultPolarConfig(dim)
@@ -144,12 +144,12 @@ func TestPolarQuantize_Integration_CompressionRatio(t *testing.T) {
 	t.Logf("BitsPerCoord:     %.3f", bpc)
 	t.Logf("Original:         %d bytes", originalBytes)
 	t.Logf("Theoretical min:  %d bytes (payload only)", theoreticalMin)
-	t.Logf("Actual compressed: %d bytes (includes header + float64 radii)", compressedBytes)
+	t.Logf("Actual compressed: %d bytes (includes header + uint16 radii)", compressedBytes)
 	t.Logf("Compression:      %.1fx", ratio)
 
 	// Compressed data should be significantly smaller than original.
-	if ratio < 5.0 {
-		t.Errorf("compression ratio %.1fx too low (minimum 5.0x)", ratio)
+	if ratio < 10.0 {
+		t.Errorf("compression ratio %.1fx too low (minimum 10.0x)", ratio)
 	}
 
 	// Verify metadata.

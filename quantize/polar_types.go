@@ -12,10 +12,10 @@ package quantize
 //   - AngleIndices[3] has d/16 entries (level 4)
 //   - Radii has d/16 entries (final radii)
 type PolarVector struct {
-	AngleIndices [][]int   // angle indices per level: level 0..L-1
-	Radii        []float64 // final-level radii (d/2^L values)
-	Dim          int       // original dimension
-	BitsPerLevel []int     // bits per level [4, 2, 2, 2]
+	AngleIndices [][]int  // angle indices per level: level 0..L-1
+	Radii        []uint16 // quantized radii (d/2^L values)
+	Dim          int      // original dimension
+	BitsPerLevel []int    // bits per level [4, 2, 2, 2]
 }
 
 // PolarConfig holds PolarQuant configuration.

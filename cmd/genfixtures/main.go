@@ -230,7 +230,7 @@ type QJLSketchCase struct {
 	Dim              int       `json:"dim"`
 	SketchDim        int       `json:"sketch_dim"`
 	Seed             int64     `json:"seed"`
-	OutlierK         int       `json:"outlier_k"`
+	OutlierIndices   []int     `json:"outlier_indices"`
 	Input            []float64 `json:"input"`
 	ExpectedBitCount int       `json:"expected_bit_count"` // number of +1 signs
 	ExpectedDim      int       `json:"expected_dim"`
@@ -247,24 +247,24 @@ func genQJLSketch() error {
 		dim       int
 		sketchDim int
 		seed      int64
-		outlierK  int
+		outliers  []int
 		input     []float64
 	}{
-		{"zero_vector", 8, 4, 42, 0, []float64{0, 0, 0, 0, 0, 0, 0, 0}},
-		{"unit_basis_0", 8, 4, 42, 0, []float64{1, 0, 0, 0, 0, 0, 0, 0}},
-		{"all_ones", 8, 8, 42, 0, []float64{1, 1, 1, 1, 1, 1, 1, 1}},
-		{"mixed_vector", 8, 4, 123, 0, []float64{1.0, -2.0, 3.0, -4.0, 0.5, -0.5, 2.0, -1.0}},
-		{"with_outliers", 8, 4, 42, 2, []float64{1.0, -2.0, 3.0, -4.0, 0.5, -0.5, 2.0, -1.0}},
-		{"large_vector", 16, 8, 99, 0, []float64{1, 2, 3, 4, 5, 6, 7, 8, -1, -2, -3, -4, -5, -6, -7, -8}},
+		{"zero_vector", 8, 4, 42, nil, []float64{0, 0, 0, 0, 0, 0, 0, 0}},
+		{"unit_basis_0", 8, 4, 42, nil, []float64{1, 0, 0, 0, 0, 0, 0, 0}},
+		{"all_ones", 8, 8, 42, nil, []float64{1, 1, 1, 1, 1, 1, 1, 1}},
+		{"mixed_vector", 8, 4, 123, nil, []float64{1.0, -2.0, 3.0, -4.0, 0.5, -0.5, 2.0, -1.0}},
+		{"with_outliers", 8, 4, 42, []int{0, 2}, []float64{1.0, -2.0, 3.0, -4.0, 0.5, -0.5, 2.0, -1.0}},
+		{"large_vector", 16, 8, 99, nil, []float64{1, 2, 3, 4, 5, 6, 7, 8, -1, -2, -3, -4, -5, -6, -7, -8}},
 	}
 
 	fixture := QJLSketchFixture{Version: 1}
 	for _, c := range configs {
 		sketcher, err := sketch.NewQJLSketcher(sketch.QJLOptions{
-			Dim:       c.dim,
-			SketchDim: c.sketchDim,
-			Seed:      c.seed,
-			OutlierK:  c.outlierK,
+			Dim:            c.dim,
+			SketchDim:      c.sketchDim,
+			Seed:           c.seed,
+			OutlierIndices: c.outliers,
 		})
 		if err != nil {
 			return fmt.Errorf("NewQJLSketcher(%s): %w", c.name, err)
@@ -283,7 +283,7 @@ func genQJLSketch() error {
 			Dim:              c.dim,
 			SketchDim:        c.sketchDim,
 			Seed:             c.seed,
-			OutlierK:         c.outlierK,
+			OutlierIndices:   c.outliers,
 			Input:            c.input,
 			ExpectedBitCount: bitCount,
 			ExpectedDim:      bv.Dim,

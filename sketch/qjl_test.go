@@ -3,7 +3,6 @@ package sketch
 import (
 	"encoding"
 	"errors"
-	"math"
 	"math/rand"
 	"sort"
 	"sync"
@@ -62,7 +61,7 @@ func TestNewQJLSketcher(t *testing.T) {
 		},
 		{
 			name:    "valid with outlier",
-			opts:    QJLOptions{Dim: 128, SketchDim: 64, Seed: 42, OutlierK: 8},
+			opts:    QJLOptions{Dim: 128, SketchDim: 64, Seed: 42, OutlierIndices: []int{0, 3, 7}},
 			wantErr: nil,
 		},
 		{
@@ -289,16 +288,16 @@ func TestConcurrentSketch(t *testing.T) {
 // Outlier handling
 // ---------------------------------------------------------------------------
 
-func TestOutlierHandling_K8(t *testing.T) {
+func TestOutlierHandling_FixedIndices(t *testing.T) {
 	const dim = 128
 	const sketchDim = 64
-	const outlierK = 8
+	indices := []int{1, 5, 17, 23}
 
 	sketcher, err := NewQJLSketcher(QJLOptions{
-		Dim:       dim,
-		SketchDim: sketchDim,
-		Seed:      42,
-		OutlierK:  outlierK,
+		Dim:            dim,
+		SketchDim:      sketchDim,
+		Seed:           42,
+		OutlierIndices: indices,
 	})
 	if err != nil {
 		t.Fatalf("NewQJLSketcher: %v", err)
@@ -316,11 +315,11 @@ func TestOutlierHandling_K8(t *testing.T) {
 	}
 
 	// Verify outlier metadata is populated
-	if len(bv.OutlierIndices) != outlierK {
-		t.Fatalf("len(OutlierIndices) = %d, want %d", len(bv.OutlierIndices), outlierK)
+	if len(bv.OutlierIndices) != len(indices) {
+		t.Fatalf("len(OutlierIndices) = %d, want %d", len(bv.OutlierIndices), len(indices))
 	}
-	if len(bv.OutlierValues) != outlierK {
-		t.Fatalf("len(OutlierValues) = %d, want %d", len(bv.OutlierValues), outlierK)
+	if len(bv.OutlierValues) != len(indices) {
+		t.Fatalf("len(OutlierValues) = %d, want %d", len(bv.OutlierValues), len(indices))
 	}
 
 	// Verify indices are in valid range and unique
@@ -333,14 +332,6 @@ func TestOutlierHandling_K8(t *testing.T) {
 			t.Errorf("duplicate outlier index %d", idx)
 		}
 		seen[idx] = true
-	}
-
-	// Verify outlier values are sorted by absolute value descending
-	for i := 1; i < outlierK; i++ {
-		if math.Abs(bv.OutlierValues[i]) > math.Abs(bv.OutlierValues[i-1]) {
-			t.Errorf("outlier values not sorted by |abs| descending: |%v| at [%d] > |%v| at [%d]",
-				bv.OutlierValues[i], i, bv.OutlierValues[i-1], i-1)
-		}
 	}
 
 	// Verify bits at outlier positions are 0

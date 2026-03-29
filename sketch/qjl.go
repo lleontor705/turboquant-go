@@ -27,7 +27,11 @@ type QJLOptions struct {
 	Seed int64
 	// OutlierK is the number of outlier projections to store in full precision.
 	// 0 disables outlier handling. Must be <= SketchDim.
+	// Deprecated: use OutlierIndices instead for fixed-channel outliers.
 	OutlierK int
+	// OutlierIndices are fixed projection indices stored in full precision.
+	// When provided, OutlierK is ignored.
+	OutlierIndices []int
 	// UseSRHT selects SRHT instead of Gaussian projection. Requires Dim to be
 	// a power of 2. SRHT is faster (O(n log n)) but less flexible.
 	UseSRHT bool
@@ -49,6 +53,9 @@ type QJLSketcher struct {
 	dim       int
 	sketchDim int
 	outlierK  int
+	// fixed outlier indices (preferred)
+	outlierIndices []int
+	outlierSet     []bool
 }
 
 // NewQJLSketcher creates a new QJL sketcher from the given options.
@@ -75,6 +82,19 @@ func NewQJLSketcher(opts QJLOptions) (*QJLSketcher, error) {
 		return nil, fmt.Errorf("sketch: outlierK=%d > sketchDim=%d: %w",
 			opts.OutlierK, opts.SketchDim, ErrInvalidConfiguration)
 	}
+	if len(opts.OutlierIndices) > 0 {
+		seen := make(map[int]bool, len(opts.OutlierIndices))
+		for _, idx := range opts.OutlierIndices {
+			if idx < 0 || idx >= opts.SketchDim {
+				return nil, fmt.Errorf("sketch: outlier index %d out of range [0,%d): %w",
+					idx, opts.SketchDim, ErrInvalidConfiguration)
+			}
+			if seen[idx] {
+				return nil, fmt.Errorf("sketch: duplicate outlier index %d: %w", idx, ErrInvalidConfiguration)
+			}
+			seen[idx] = true
+		}
+	}
 
 	var proj Projector
 	var err error
@@ -87,12 +107,26 @@ func NewQJLSketcher(opts QJLOptions) (*QJLSketcher, error) {
 		return nil, err
 	}
 
-	return &QJLSketcher{
-		projector: proj,
-		dim:       opts.Dim,
-		sketchDim: opts.SketchDim,
-		outlierK:  opts.OutlierK,
-	}, nil
+	sketcher := &QJLSketcher{
+		projector:      proj,
+		dim:            opts.Dim,
+		sketchDim:      opts.SketchDim,
+		outlierK:       opts.OutlierK,
+		outlierIndices: nil,
+		outlierSet:     nil,
+	}
+	if len(opts.OutlierIndices) > 0 {
+		indices := make([]int, len(opts.OutlierIndices))
+		copy(indices, opts.OutlierIndices)
+		set := make([]bool, opts.SketchDim)
+		for _, idx := range indices {
+			set[idx] = true
+		}
+		sketcher.outlierIndices = indices
+		sketcher.outlierSet = set
+	}
+
+	return sketcher, nil
 }
 
 // Dim returns the input dimension.
@@ -105,9 +139,10 @@ func (s *QJLSketcher) SketchDim() int { return s.sketchDim }
 //
 // Algorithm:
 //  1. Project vec through the random projection matrix → sketchDim-dimensional vector.
-//  2. If OutlierK > 0: find top-K values by absolute magnitude, store indices + values.
+//  2. If OutlierIndices provided: store those indices + values.
+//     Else if OutlierK > 0: find top-K values by absolute magnitude, store indices + values.
 //  3. Sign quantize: positive → +1, non-positive → -1.
-//  4. If OutlierK > 0: zero out outlier positions in the sign vector (set to -1 → bit=0).
+//  4. If outliers present: zero out outlier positions in the sign vector (set to -1 → bit=0).
 //  5. Pack signs into BitVector.
 //
 // Returns ErrDimensionMismatch if len(vec) != Dim().
@@ -123,12 +158,19 @@ func (s *QJLSketcher) Sketch(vec []float64) (*BitVector, error) {
 		return nil, fmt.Errorf("sketch: projection failed: %w", err)
 	}
 
-	// Step 2: Find outliers (top-K by absolute value)
+	// Step 2: Find outliers (fixed indices or top-K by magnitude).
 	var outlierIndices []int
 	var outlierValues []float64
-	outlierSet := make(map[int]bool)
+	var outlierSet map[int]bool
 
-	if s.outlierK > 0 {
+	if len(s.outlierIndices) > 0 {
+		outlierIndices = make([]int, len(s.outlierIndices))
+		outlierValues = make([]float64, len(s.outlierIndices))
+		copy(outlierIndices, s.outlierIndices)
+		for i, idx := range outlierIndices {
+			outlierValues[i] = projected[idx]
+		}
+	} else if s.outlierK > 0 {
 		type iv struct {
 			idx int
 			abs float64
@@ -144,6 +186,7 @@ func (s *QJLSketcher) Sketch(vec []float64) (*BitVector, error) {
 
 		outlierIndices = make([]int, s.outlierK)
 		outlierValues = make([]float64, s.outlierK)
+		outlierSet = make(map[int]bool, s.outlierK)
 		for i := 0; i < s.outlierK; i++ {
 			outlierIndices[i] = candidates[i].idx
 			outlierValues[i] = projected[candidates[i].idx]
@@ -162,8 +205,14 @@ func (s *QJLSketcher) Sketch(vec []float64) (*BitVector, error) {
 	}
 
 	// Step 4: Zero out outlier positions in the sign vector (bit=0 → sign=-1)
-	for idx := range outlierSet {
-		signs[idx] = -1
+	if len(s.outlierIndices) > 0 {
+		for _, idx := range s.outlierIndices {
+			signs[idx] = -1
+		}
+	} else if s.outlierK > 0 {
+		for idx := range outlierSet {
+			signs[idx] = -1
+		}
 	}
 
 	// Step 5: Pack into BitVector

@@ -14,7 +14,7 @@ type QJLSketchCase struct {
 	Dim              int       `json:"dim"`
 	SketchDim        int       `json:"sketch_dim"`
 	Seed             int64     `json:"seed"`
-	OutlierK         int       `json:"outlier_k"`
+	OutlierIndices   []int     `json:"outlier_indices"`
 	Input            []float64 `json:"input"`
 	ExpectedBitCount int       `json:"expected_bit_count"`
 	ExpectedDim      int       `json:"expected_dim"`
@@ -49,10 +49,10 @@ func TestGoldenQJLSketch(t *testing.T) {
 	for _, tc := range fixture.Cases {
 		t.Run(tc.Name, func(t *testing.T) {
 			sketcher, err := NewQJLSketcher(QJLOptions{
-				Dim:       tc.Dim,
-				SketchDim: tc.SketchDim,
-				Seed:      tc.Seed,
-				OutlierK:  tc.OutlierK,
+				Dim:            tc.Dim,
+				SketchDim:      tc.SketchDim,
+				Seed:           tc.Seed,
+				OutlierIndices: tc.OutlierIndices,
 			})
 			if err != nil {
 				t.Fatalf("NewQJLSketcher returned error: %v", err)
@@ -81,32 +81,40 @@ func TestGoldenQJLSketch(t *testing.T) {
 			}
 
 			// Verify outlier handling
-			if tc.OutlierK > 0 {
-				if len(bv.OutlierIndices) != tc.OutlierK {
+			if len(tc.OutlierIndices) > 0 {
+				if len(bv.OutlierIndices) != len(tc.OutlierIndices) {
 					t.Errorf("len(OutlierIndices) = %d, want %d",
-						len(bv.OutlierIndices), tc.OutlierK)
+						len(bv.OutlierIndices), len(tc.OutlierIndices))
 				}
-				if len(bv.OutlierValues) != tc.OutlierK {
+				if len(bv.OutlierValues) != len(tc.OutlierIndices) {
 					t.Errorf("len(OutlierValues) = %d, want %d",
-						len(bv.OutlierValues), tc.OutlierK)
+						len(bv.OutlierValues), len(tc.OutlierIndices))
+				}
+				for i, idx := range tc.OutlierIndices {
+					if i >= len(bv.OutlierIndices) {
+						break
+					}
+					if bv.OutlierIndices[i] != idx {
+						t.Errorf("OutlierIndices[%d] = %d, want %d", i, bv.OutlierIndices[i], idx)
+					}
 				}
 			} else {
-				if bv.OutlierIndices != nil {
-					t.Errorf("OutlierIndices should be nil when OutlierK=0, got %v",
+				if len(bv.OutlierIndices) != 0 {
+					t.Errorf("OutlierIndices should be empty when OutlierIndices is empty, got %v",
 						bv.OutlierIndices)
 				}
-				if bv.OutlierValues != nil {
-					t.Errorf("OutlierValues should be nil when OutlierK=0, got %v",
+				if len(bv.OutlierValues) != 0 {
+					t.Errorf("OutlierValues should be empty when OutlierIndices is empty, got %v",
 						bv.OutlierValues)
 				}
 			}
 
 			// Verify determinism: same seed produces same result
 			sketcher2, _ := NewQJLSketcher(QJLOptions{
-				Dim:       tc.Dim,
-				SketchDim: tc.SketchDim,
-				Seed:      tc.Seed,
-				OutlierK:  tc.OutlierK,
+				Dim:            tc.Dim,
+				SketchDim:      tc.SketchDim,
+				Seed:           tc.Seed,
+				OutlierIndices: tc.OutlierIndices,
 			})
 			bv2, err := sketcher2.Sketch(tc.Input)
 			if err != nil {
@@ -128,10 +136,10 @@ func TestGoldenQJLSketch(t *testing.T) {
 func TestGoldenQJLSketchSerialization(t *testing.T) {
 	// Test that BitVector round-trips through MarshalBinary/UnmarshalBinary
 	sketcher, err := NewQJLSketcher(QJLOptions{
-		Dim:       8,
-		SketchDim: 4,
-		Seed:      42,
-		OutlierK:  0,
+		Dim:            8,
+		SketchDim:      4,
+		Seed:           42,
+		OutlierIndices: nil,
 	})
 	if err != nil {
 		t.Fatal(err)

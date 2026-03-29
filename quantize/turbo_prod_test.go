@@ -160,7 +160,7 @@ func TestTurboProd_ResidualComputation(t *testing.T) {
 	// Normalize to unit norm.
 	normalizeUnit(vec)
 
-	// Manually compute expected residual norm.
+	// Manually compute expected residual norm (scaled by original norm).
 	mseCV, err := tpq.mseQuant.Quantize(vec)
 	if err != nil {
 		t.Fatal(err)
@@ -170,12 +170,21 @@ func TestTurboProd_ResidualComputation(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	origNorm := 0.0
+	for _, v := range vec {
+		origNorm += v * v
+	}
+	origNorm = math.Sqrt(origNorm)
+
 	expectedGamma := 0.0
 	for i := range vec {
 		d := vec[i] - xHat[i]
 		expectedGamma += d * d
 	}
 	expectedGamma = math.Sqrt(expectedGamma)
+	if origNorm != 0 {
+		expectedGamma *= origNorm
+	}
 
 	// Quantize through TurboProd and decode wire format.
 	cv, err := tpq.Quantize(vec)
@@ -198,9 +207,14 @@ func TestTurboProd_ResidualComputation(t *testing.T) {
 		t.Errorf("gamma = %.6f, expected > 0", pd.gamma)
 	}
 
-	// Gamma should be bounded (< 1.0 for reasonable MSE quantization).
-	if pd.gamma > 1.0 {
-		t.Errorf("gamma = %.6f, expected < 1.0", pd.gamma)
+	// Gamma should be bounded (< norm for reasonable MSE quantization).
+	if pd.gamma > origNorm {
+		t.Errorf("gamma = %.6f, expected < %.6f", pd.gamma, origNorm)
+	}
+
+	// Norm should match original.
+	if math.Abs(pd.norm-origNorm) > 1e-10 {
+		t.Errorf("norm = %.10f, want %.10f", pd.norm, origNorm)
 	}
 
 	// Sketch dimension in wire format should match.

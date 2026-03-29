@@ -383,6 +383,23 @@ func TestPolarQuantize_BitEfficiency(t *testing.T) {
 	}
 }
 
+func TestPolarQuantize_RadiiQuantizationRoundTrip(t *testing.T) {
+	radii := []float64{0, 0.125, 0.5, 0.9, 1.0}
+	quantized, err := quantizeRadii16(radii)
+	if err != nil {
+		t.Fatalf("quantizeRadii16: %v", err)
+	}
+	deq := dequantizeRadii16(quantized)
+	if len(deq) != len(radii) {
+		t.Fatalf("len(deq)=%d, want %d", len(deq), len(radii))
+	}
+	for i, v := range radii {
+		if math.Abs(deq[i]-v) > 1e-3 {
+			t.Errorf("radii[%d]=%.6f -> %.6f", i, v, deq[i])
+		}
+	}
+}
+
 // ---------------------------------------------------------------------------
 // NaN input
 // ---------------------------------------------------------------------------
