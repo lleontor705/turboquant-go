@@ -1,38 +1,34 @@
 name: CI
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
+    branches: [develop, main]
 
 jobs:
   test:
-    name: Go ${{ matrix.go }} · ${{ matrix.os }}
+    name: Go ${{ matrix.go }} / ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
         go: ['1.24', '1.23']
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Go
-        uses: actions/setup-go@v5
+      - uses: actions/setup-go@v5
         with:
           go-version: ${{ matrix.go }}
           cache: true
 
-      - name: Go vet
+      - name: Vet
         run: go vet ./...
 
-      - name: Go test (race)
+      - name: Test (race)
         if: runner.os != 'Windows'
-        run: go test -race ./...
+        run: go test -race -count=1 ./...
 
-      - name: Go test (no race)
+      - name: Test
         if: runner.os == 'Windows'
-        run: go test ./...
+        run: go test -count=1 ./...

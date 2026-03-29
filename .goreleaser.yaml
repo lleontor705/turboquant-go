@@ -1,0 +1,104 @@
+version: 2
+
+builds:
+  - main: ./examples/ann_search
+    id: tq-ann-search
+    binary: tq-ann-search
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w
+
+  - main: ./examples/polar_search
+    id: tq-polar-search
+    binary: tq-polar-search
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w
+
+  - main: ./examples/turbo_search
+    id: tq-turbo-search
+    binary: tq-turbo-search
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w
+
+  - main: ./examples/prod_search
+    id: tq-prod-search
+    binary: tq-prod-search
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w
+
+archives:
+  - formats:
+      - tar.gz
+    format_overrides:
+      - goos: windows
+        formats:
+          - zip
+    name_template: "turboquant-go_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+
+checksum:
+  name_template: "checksums.txt"
+
+changelog:
+  sort: asc
+  filters:
+    include:
+      - "^feat"
+      - "^fix"
+      - "^perf"
+      - "^refactor"
+    exclude:
+      - "^docs"
+      - "^test"
+      - "^ci"
+      - "^chore\(deps\)"
+
+brews:
+  - repository:
+      owner: lleontor705
+      name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
+    directory: Formula
+    homepage: "https://github.com/lleontor705/turboquant-go"
+    description: "Pure Go vector compression — TurboQuant, PolarQuant, QJL Sketching from Google Research papers"
+    license: "MIT"
+    commit_msg_template: "chore: update turboquant-go formula to {{ .Tag }}"
+    install: |
+      bin.install "tq-ann-search"
+      bin.install "tq-polar-search"
+      bin.install "tq-turbo-search"
+      bin.install "tq-prod-search"
