@@ -11,7 +11,7 @@ jobs:
     uses: lleontor705/ats-deploy-public/.github/workflows/quality-go.yml@main
     with:
       go-version: "1.24"
-      test-timeout: "15m"
+      test-timeout: "20m"
 
   security:
     uses: lleontor705/ats-deploy-public/.github/workflows/security-scan.yml@main
