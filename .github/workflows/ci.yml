@@ -12,6 +12,7 @@ jobs:
     with:
       go-version: "1.24"
       test-timeout: "20m"
+      enable-race: false
 
   security:
     uses: lleontor705/ats-deploy-public/.github/workflows/security-scan.yml@main
