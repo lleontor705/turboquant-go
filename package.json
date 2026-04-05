@@ -1,0 +1,29 @@
+{
+  "name": "turboquant-go",
+  "version": "1.0.0",
+  "description": "<p align=\"center\">\r   <strong>turboquant-go</strong><br>\r   <em>Pure Go vector compression — TurboQuant, PolarQuant, QJL Sketching</em>\r </p>",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lleontor705/turboquant-go.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/lleontor705/turboquant-go/issues"
+  },
+  "homepage": "https://github.com/lleontor705/turboquant-go#readme",
+  "devDependencies": {
+    "husky": "^9.1.7"
+  }
+}
