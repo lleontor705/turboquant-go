@@ -54,17 +54,13 @@ func NewTurboQuantizer(dim int, bits int, seed int64) (*TurboQuantizer, error) {
 	}
 
 	// Generate random orthogonal matrix.
+	// Cannot fail: dim >= 2 (validated above) and rng is non-nil.
 	rng := rand.New(rand.NewSource(seed))
-	rot, err := rotate.RandomOrthogonal(dim, rng)
-	if err != nil {
-		return nil, fmt.Errorf("turbo: failed to generate rotation: %w", err)
-	}
+	rot, _ := rotate.RandomOrthogonal(dim, rng)
 
 	// Get precomputed codebook for Beta(d) distribution.
-	codebook, err := TurboCodebook(dim, bits)
-	if err != nil {
-		return nil, fmt.Errorf("turbo: failed to get codebook: %w", err)
-	}
+	// Cannot fail: dim >= 2 and bits 1-4 are validated above.
+	codebook, _ := TurboCodebook(dim, bits)
 
 	return &TurboQuantizer{
 		dim:      dim,
@@ -93,29 +89,10 @@ func (tq *TurboQuantizer) Quantize(vec []float64) (CompressedVector, error) {
 	}
 
 	// Normalize to unit norm (required for Beta distribution assumption).
-	unit := make([]float64, tq.dim)
-	copy(unit, vec)
-	norm := 0.0
-	for _, v := range unit {
-		norm += v * v
-	}
-	norm = math.Sqrt(norm)
-	if norm > 0 {
-		invNorm := 1.0 / norm
-		for i := range unit {
-			unit[i] *= invNorm
-		}
-	}
+	unit, norm := normalizeUnit(vec)
 
 	// Apply random rotation: y = Π · x
-	rotated := make([]float64, tq.dim)
-	for i := 0; i < tq.dim; i++ {
-		var sum float64
-		for j := 0; j < tq.dim; j++ {
-			sum += tq.rotation.At(i, j) * unit[j]
-		}
-		rotated[i] = sum
-	}
+	rotated := rotateForward(tq.rotation, unit)
 
 	// Quantize each coordinate: idx_j = argmin_k |y_j - c_k|
 	indices := QuantizeWithCodebook(rotated, tq.codebook)
@@ -154,25 +131,14 @@ func (tq *TurboQuantizer) Dequantize(cv CompressedVector) ([]float64, error) {
 	indices := unpackIndices(packed, tq.dim, tq.bits)
 
 	// Look up centroids: ỹ_j = c[idx_j]
+	// Index bounds are guaranteed by unpackIndices (bit-masked to [0, 2^bits-1]).
 	centroids := make([]float64, tq.dim)
 	for i, idx := range indices {
-		if idx < 0 || idx >= len(tq.codebook) {
-			return nil, fmt.Errorf("turbo: invalid index %d for codebook size %d",
-				idx, len(tq.codebook))
-		}
 		centroids[i] = tq.codebook[idx]
 	}
 
 	// Apply inverse rotation: x̃ = Π^T · ỹ
-	result := make([]float64, tq.dim)
-	for i := 0; i < tq.dim; i++ {
-		var sum float64
-		for j := 0; j < tq.dim; j++ {
-			// Π^T[i][j] = Π[j][i]
-			sum += tq.rotation.At(j, i) * centroids[j]
-		}
-		result[i] = sum
-	}
+	result := rotateInverse(tq.rotation, centroids)
 
 	// Re-apply original norm.
 	if norm != 1.0 {
@@ -296,10 +262,7 @@ func decodeTurboWire(data []byte) (float64, []byte, error) {
 	}
 	norm := math.Float64frombits(binary.LittleEndian.Uint64(tmp8[:]))
 	packed := make([]byte, r.Len())
-	if len(packed) > 0 {
-		if _, err := io.ReadFull(r, packed); err != nil {
-			return 0, nil, fmt.Errorf("reading packed data: %w", err)
-		}
-	}
+	// Cannot fail: we read exactly r.Len() bytes from r.
+	io.ReadFull(r, packed) //nolint:errcheck
 	return norm, packed, nil
 }

@@ -111,7 +111,10 @@ func TestConcurrentHamming(t *testing.T) {
 	}
 
 	// Compute expected results once.
-	expectedDist := HammingDistance(*bvA, *bvB)
+	expectedDist, err := HammingDistance(*bvA, *bvB)
+	if err != nil {
+		t.Fatalf("HammingDistance: %v", err)
+	}
 	expectedIP, err := EstimateInnerProduct(*bvA, *bvB)
 	if err != nil {
 		t.Fatalf("EstimateInnerProduct: %v", err)
@@ -127,7 +130,12 @@ func TestConcurrentHamming(t *testing.T) {
 
 			// Half the goroutines test HammingDistance, half test EstimateInnerProduct.
 			if iteration%2 == 0 {
-				d := HammingDistance(*bvA, *bvB)
+				d, err := HammingDistance(*bvA, *bvB)
+				if err != nil {
+					t.Errorf("HammingDistance: %v", err)
+					errors.Add(1)
+					return
+				}
 				if d != expectedDist {
 					t.Errorf("HammingDistance: got %d, want %d", d, expectedDist)
 					errors.Add(1)

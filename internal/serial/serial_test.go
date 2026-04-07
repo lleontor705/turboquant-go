@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"errors"
+	"fmt"
 	"io"
 	"math"
 	"testing"
@@ -308,4 +309,91 @@ func TestTruncatedLengthPrefix(t *testing.T) {
 	if !errors.Is(err, io.ErrUnexpectedEOF) {
 		t.Fatalf("expected io.ErrUnexpectedEOF, got %v", err)
 	}
+}
+
+// failWriter is an io.Writer that succeeds for the first N bytes and then
+// returns an error. This is used to exercise write-error paths inside the
+// value-writing loops of WriteUint64Slice and WriteFloat64Slice.
+type failWriter struct {
+	remaining int
+}
+
+func (w *failWriter) Write(p []byte) (int, error) {
+	if w.remaining <= 0 {
+		return 0, fmt.Errorf("failWriter: intentional write error")
+	}
+	if len(p) <= w.remaining {
+		w.remaining -= len(p)
+		return len(p), nil
+	}
+	n := w.remaining
+	w.remaining = 0
+	return n, fmt.Errorf("failWriter: intentional write error")
+}
+
+// TestWriteUint64Slice_LengthPrefixError verifies that WriteUint64Slice
+// propagates errors that occur while writing the length prefix.
+func TestWriteUint64Slice_LengthPrefixError(t *testing.T) {
+	data := []uint64{1, 2, 3}
+	w := &failWriter{remaining: 0}
+	err := WriteUint64Slice(w, data)
+	if err == nil {
+		t.Fatal("expected error from failWriter during length prefix write, got nil")
+	}
+}
+
+// TestWriteUint64Slice_ValueError verifies that WriteUint64Slice propagates
+// errors that occur while writing individual uint64 values (not the length prefix).
+func TestWriteUint64Slice_ValueError(t *testing.T) {
+	data := []uint64{1, 2, 3}
+	// Allow the 4-byte length prefix to succeed, then fail on the first value write.
+	w := &failWriter{remaining: 4}
+	err := WriteUint64Slice(w, data)
+	if err == nil {
+		t.Fatal("expected error from failWriter during value writes, got nil")
+	}
+}
+
+// TestWriteFloat64Slice_LengthPrefixError verifies that WriteFloat64Slice
+// propagates errors that occur while writing the length prefix.
+func TestWriteFloat64Slice_LengthPrefixError(t *testing.T) {
+	data := []float64{1.0, 2.0, 3.0}
+	w := &failWriter{remaining: 0}
+	err := WriteFloat64Slice(w, data)
+	if err == nil {
+		t.Fatal("expected error from failWriter during length prefix write, got nil")
+	}
+}
+
+// TestWriteFloat64Slice_ValueError verifies that WriteFloat64Slice propagates
+// errors that occur while writing individual float64 values (not the length prefix).
+func TestWriteFloat64Slice_ValueError(t *testing.T) {
+	data := []float64{1.0, 2.0, 3.0}
+	// Allow the 4-byte length prefix to succeed, then fail on the first value write.
+	w := &failWriter{remaining: 4}
+	err := WriteFloat64Slice(w, data)
+	if err == nil {
+		t.Fatal("expected error from failWriter during value writes, got nil")
+	}
+}
+
+// TestReadVersion_UnexpectedEOF verifies that ReadVersion returns
+// io.ErrUnexpectedEOF when io.ReadFull itself returns io.ErrUnexpectedEOF.
+// This is different from a plain io.EOF (empty reader) — it occurs when the
+// reader provides fewer bytes than requested but more than zero.
+// For a 1-byte read, io.ReadFull returns io.EOF (not ErrUnexpectedEOF) on an
+// empty reader, so we use a reader that returns ErrUnexpectedEOF directly.
+func TestReadVersion_UnexpectedEOF(t *testing.T) {
+	r := &unexpectedEOFReader{}
+	err := ReadVersion(r)
+	if !errors.Is(err, io.ErrUnexpectedEOF) {
+		t.Fatalf("expected io.ErrUnexpectedEOF, got %v", err)
+	}
+}
+
+// unexpectedEOFReader is a reader that always returns io.ErrUnexpectedEOF.
+type unexpectedEOFReader struct{}
+
+func (r *unexpectedEOFReader) Read(p []byte) (int, error) {
+	return 0, io.ErrUnexpectedEOF
 }

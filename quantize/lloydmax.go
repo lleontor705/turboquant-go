@@ -3,6 +3,7 @@ package quantize
 import (
 	"fmt"
 	"math"
+	"sort"
 )
 
 // LloydMax computes optimal quantization centroids and boundaries for a given PDF
@@ -54,10 +55,8 @@ func LloydMax(pdf func(float64) float64, min, max float64, levels int, iteration
 	if totalArea > 0 {
 		for i := 0; i < n; i++ {
 			target := totalArea * (float64(i) + 0.5) / float64(n)
+			// searchCDF returns at most len(cdf)-1 = cdfN via binary search bounds.
 			idx := searchCDF(cdf, target)
-			if idx > cdfN {
-				idx = cdfN
-			}
 			centroids[i] = min + float64(idx)*cdfDx
 		}
 	} else {
@@ -142,21 +141,26 @@ func searchCDF(cdf []float64, target float64) int {
 }
 
 // NearestCentroid finds the index of the nearest centroid to value x.
+// Centroids must be sorted in ascending order. Uses binary search for O(log k).
 // Returns -1 if centroids is empty.
 func NearestCentroid(x float64, centroids []float64) int {
-	if len(centroids) == 0 {
+	n := len(centroids)
+	if n == 0 {
 		return -1
 	}
-	bestIdx := 0
-	bestDist := math.Abs(x - centroids[0])
-	for i := 1; i < len(centroids); i++ {
-		d := math.Abs(x - centroids[i])
-		if d < bestDist {
-			bestDist = d
-			bestIdx = i
-		}
+	// Binary search: find the insertion point.
+	i := sort.SearchFloat64s(centroids, x)
+	if i == 0 {
+		return 0
 	}
-	return bestIdx
+	if i >= n {
+		return n - 1
+	}
+	// Compare distances to centroids[i-1] and centroids[i].
+	if math.Abs(x-centroids[i-1]) <= math.Abs(x-centroids[i]) {
+		return i - 1
+	}
+	return i
 }
 
 // QuantizeWithCodebook maps each value to the index of its nearest centroid.

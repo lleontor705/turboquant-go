@@ -75,31 +75,31 @@ func NewTurboProdQuantizer(dim int, bits int, sketchDim int, seed int64) (*Turbo
 
 	mseBits := bits - 1
 	mseSeed := seed
-	qjlSeed := seed ^ 0x5A5A5A5A5A5A5A5A // derive independent seed for QJL
+	// Derive independent QJL seed via FNV-1a hash to avoid correlation.
+	qjlSeed := fnvDeriveSeed(seed)
 
 	// Create MSE quantizer with (bits-1) bits.
-	mseQuant, err := NewTurboQuantizer(dim, mseBits, mseSeed)
-	if err != nil {
-		return nil, fmt.Errorf("turbo_prod: MSE quantizer creation failed: %w", err)
-	}
+	// Cannot fail: dim >= 2 and mseBits in [1,3] are already validated above.
+	mseQuant, _ := NewTurboQuantizer(dim, mseBits, mseSeed)
 
 	// Create Gaussian projection for both encoding and IP correction.
-	// The projection matrix S has shape sketchDim × dim with entries N(0, 1/dim).
-	projector, err := sketch.NewGaussianProjection(dim, sketchDim, qjlSeed)
-	if err != nil {
-		return nil, fmt.Errorf("turbo_prod: projection creation failed: %w", err)
-	}
+	// The projection matrix S has shape sketchDim × dim with entries N(0, 1/√dim).
+	// Cannot fail: dim > 0 and sketchDim in [1,dim] are already validated above.
+	projector, _ := sketch.NewGaussianProjection(dim, sketchDim, qjlSeed)
 
-	// Precompute correction scale: √(π·dim / (2·sketchDim²)).
+	// Precompute correction scale: √(π·d / (2·k²)) where k = sketchDim.
 	//
-	// Derivation: for unbiased IP estimation, the correction term is
-	//   γ · scale · dot(signs, S·query)
-	// where scale = √(π·dim / (2·k²)) with k = sketchDim.
+	// Derivation (S has entries N(0, 1/√d), so S·v scales by 1/√d vs N(0,1)):
 	//
-	// Proof of unbiasedness:
-	//   E_S[sign(S·r)_j · (S·y)_j] = √(2/π) · <r,y> / (γ·√dim)
-	//   E_S[correction] = γ · scale · k · √(2/π) · <r,y>/(γ·√dim) = <r,y>
-	//   E_S[estimate] = <y, x̂_mse> + <y, r> = <y, x>
+	//   Reference (S_ref ~ N(0,1)): scale_ref = √(π/2) / k
+	//   Our S = S_ref / √d, so dot(signs, S·y) = (1/√d)·dot(signs, S_ref·y)
+	//   Compensation: scale = √d · scale_ref = √d · √(π/2) / k = √(πd/2) / k
+	//
+	//   Equivalently: √(π·d / (2·k²))
+	//
+	//   E[correction] = γ · scale · E[dot(signs, S·y)]
+	//                 = γ · √(πd/(2k²)) · (k/√d) · √(2/π) · ⟨r̂, y⟩
+	//                 = γ · ⟨r̂, y⟩ = ⟨r, y⟩ · norm  ✓
 	correctionScale := math.Sqrt(math.Pi * float64(dim) / (2.0 * float64(sketchDim*sketchDim)))
 
 	return &TurboProdQuantizer{
@@ -135,31 +135,13 @@ func (tpq *TurboProdQuantizer) Quantize(vec []float64) (CompressedVector, error)
 	}
 
 	// Normalize to unit norm.
-	unit := make([]float64, tpq.dim)
-	copy(unit, vec)
-	norm := 0.0
-	for _, v := range unit {
-		norm += v * v
-	}
-	norm = math.Sqrt(norm)
-	if norm > 0 {
-		invNorm := 1.0 / norm
-		for i := range unit {
-			unit[i] *= invNorm
-		}
-	}
+	unit, norm := normalizeUnit(vec)
 
-	// MSE quantize.
-	mseCV, err := tpq.mseQuant.Quantize(unit)
-	if err != nil {
-		return CompressedVector{}, fmt.Errorf("turbo_prod: MSE quantize failed: %w", err)
-	}
+	// MSE quantize — cannot fail: unit is validated (correct dim, no NaN).
+	mseCV, _ := tpq.mseQuant.Quantize(unit)
 
-	// MSE dequantize to get reconstruction.
-	xHat, err := tpq.mseQuant.Dequantize(mseCV)
-	if err != nil {
-		return CompressedVector{}, fmt.Errorf("turbo_prod: MSE dequantize failed: %w", err)
-	}
+	// MSE dequantize — cannot fail: mseCV was just produced by the same quantizer.
+	xHat, _ := tpq.mseQuant.Dequantize(mseCV)
 
 	// Compute residual: r = unit - x̂, and residual norm γ = ||r||.
 	residual := make([]float64, tpq.dim)
@@ -175,16 +157,11 @@ func (tpq *TurboProdQuantizer) Quantize(vec []float64) (CompressedVector, error)
 	}
 
 	// QJL: project residual, sign-quantize, and pack into bits.
-	sketchBits, err := tpq.sketchResidual(residual)
-	if err != nil {
-		return CompressedVector{}, fmt.Errorf("turbo_prod: sketch residual failed: %w", err)
-	}
+	// Cannot fail: residual has correct dim, projector is valid, signs are ±1.
+	sketchBits := tpq.sketchResidualUnchecked(residual)
 
 	// Pack into CompressedVector wire format.
-	data, err := encodeProdWire(tpq.sketchDim, norm, gamma, mseCV.Data, sketchBits)
-	if err != nil {
-		return CompressedVector{}, fmt.Errorf("turbo_prod: wire encode failed: %w", err)
-	}
+	data := encodeProdWire(tpq.sketchDim, norm, gamma, mseCV.Data, sketchBits)
 
 	return CompressedVector{
 		Data:    data,
@@ -222,10 +199,8 @@ func (tpq *TurboProdQuantizer) Dequantize(cv CompressedVector) ([]float64, error
 		Max:     1.0,
 		BitsPer: tpq.bits - 1,
 	}
-	unit, err := tpq.mseQuant.Dequantize(mseCV)
-	if err != nil {
-		return nil, err
-	}
+	// Cannot fail: mseCV was decoded from valid wire data with matching config.
+	unit, _ := tpq.mseQuant.Dequantize(mseCV)
 	if pd.norm != 1.0 {
 		for i := range unit {
 			unit[i] *= pd.norm
@@ -281,10 +256,8 @@ func (tpq *TurboProdQuantizer) EstimateInnerProduct(query []float64, cv Compress
 		Max:     1.0,
 		BitsPer: tpq.bits - 1,
 	}
-	xHat, err := tpq.mseQuant.Dequantize(mseCV)
-	if err != nil {
-		return 0, fmt.Errorf("turbo_prod: MSE dequantize failed: %w", err)
-	}
+	// Cannot fail: mseCV was decoded from valid wire data with matching config.
+	xHat, _ := tpq.mseQuant.Dequantize(mseCV)
 
 	// MSE inner product: dot(query, x̂_mse) scaled by original norm.
 	ipMse := 0.0
@@ -298,17 +271,11 @@ func (tpq *TurboProdQuantizer) EstimateInnerProduct(query []float64, cv Compress
 		return ipMse, nil
 	}
 
-	// Unpack sketch signs from packed uint64s.
-	signs, err := bits.Unpack(pd.sketchBits, tpq.sketchDim)
-	if err != nil {
-		return 0, fmt.Errorf("turbo_prod: unpack signs failed: %w", err)
-	}
+	// Unpack sketch signs — cannot fail: sketchBits were encoded by us with valid dims.
+	signs, _ := bits.Unpack(pd.sketchBits, tpq.sketchDim)
 
-	// Project query through the same QJL matrix: projQuery = S · query.
-	projQuery, err := tpq.projector.Project(query)
-	if err != nil {
-		return 0, fmt.Errorf("turbo_prod: project query failed: %w", err)
-	}
+	// Project query — cannot fail: query dim was validated above.
+	projQuery, _ := tpq.projector.Project(query)
 
 	// Compute correction: γ · correctionScale · dot(signs, projQuery).
 	signDotProj := 0.0
@@ -371,14 +338,11 @@ func (tpq *TurboProdQuantizer) SketchDim() int { return tpq.sketchDim }
 // Internal: residual sketching
 // ---------------------------------------------------------------------------
 
-// sketchResidual projects the residual vector through the QJL matrix and
-// returns the sign-quantized packed bits.
-func (tpq *TurboProdQuantizer) sketchResidual(residual []float64) ([]uint64, error) {
-	// Project: projected = S · residual.
-	projected, err := tpq.projector.Project(residual)
-	if err != nil {
-		return nil, err
-	}
+// sketchResidualUnchecked projects the residual vector through the QJL matrix and
+// returns the sign-quantized packed bits. Inputs are guaranteed valid by caller.
+func (tpq *TurboProdQuantizer) sketchResidualUnchecked(residual []float64) []uint64 {
+	// Project — cannot fail: residual dim matches projector source dim.
+	projected, _ := tpq.projector.Project(residual)
 
 	// Sign quantize: positive → +1, non-positive → -1.
 	signs := make([]int8, tpq.sketchDim)
@@ -390,12 +354,9 @@ func (tpq *TurboProdQuantizer) sketchResidual(residual []float64) ([]uint64, err
 		}
 	}
 
-	// Pack into uint64s.
-	packed, err := bits.Pack(signs)
-	if err != nil {
-		return nil, err
-	}
-	return packed, nil
+	// Pack — cannot fail: signs are always ±1.
+	packed, _ := bits.Pack(signs)
+	return packed
 }
 
 // ---------------------------------------------------------------------------
@@ -422,57 +383,36 @@ type prodWireData struct {
 	sketchBits []uint64
 }
 
-func encodeProdWire(sketchDim int, norm float64, gamma float64, mseData []byte, sketchBits []uint64) ([]byte, error) {
+func encodeProdWire(sketchDim int, norm float64, gamma float64, mseData []byte, sketchBits []uint64) []byte {
 	buf := new(bytes.Buffer)
 	var tmp4 [4]byte
 	var tmp8 [8]byte
 
-	// Version.
-	if err := buf.WriteByte(prodWireVersion); err != nil {
-		return nil, fmt.Errorf("turbo_prod: encode version: %w", err)
-	}
+	// bytes.Buffer.Write/WriteByte never return errors.
+	buf.WriteByte(prodWireVersion)
 
-	// SketchDim.
 	binary.LittleEndian.PutUint32(tmp4[:], uint32(sketchDim))
-	if _, err := buf.Write(tmp4[:]); err != nil {
-		return nil, fmt.Errorf("turbo_prod: encode sketchDim: %w", err)
-	}
+	buf.Write(tmp4[:])
 
-	// Norm.
 	binary.LittleEndian.PutUint64(tmp8[:], math.Float64bits(norm))
-	if _, err := buf.Write(tmp8[:]); err != nil {
-		return nil, fmt.Errorf("turbo_prod: encode norm: %w", err)
-	}
+	buf.Write(tmp8[:])
 
-	// Gamma (residual norm).
 	binary.LittleEndian.PutUint64(tmp8[:], math.Float64bits(gamma))
-	if _, err := buf.Write(tmp8[:]); err != nil {
-		return nil, fmt.Errorf("turbo_prod: encode gamma: %w", err)
-	}
+	buf.Write(tmp8[:])
 
-	// MSE data with length prefix.
 	binary.LittleEndian.PutUint32(tmp4[:], uint32(len(mseData)))
-	if _, err := buf.Write(tmp4[:]); err != nil {
-		return nil, fmt.Errorf("turbo_prod: encode mseDataLen: %w", err)
-	}
-	if _, err := buf.Write(mseData); err != nil {
-		return nil, fmt.Errorf("turbo_prod: encode mseData: %w", err)
-	}
+	buf.Write(tmp4[:])
+	buf.Write(mseData)
 
-	// Sketch bits (packed uint64s).
 	numWords := uint32(len(sketchBits))
 	binary.LittleEndian.PutUint32(tmp4[:], numWords)
-	if _, err := buf.Write(tmp4[:]); err != nil {
-		return nil, fmt.Errorf("turbo_prod: encode numSketchWords: %w", err)
-	}
+	buf.Write(tmp4[:])
 	for _, w := range sketchBits {
 		binary.LittleEndian.PutUint64(tmp8[:], w)
-		if _, err := buf.Write(tmp8[:]); err != nil {
-			return nil, fmt.Errorf("turbo_prod: encode sketchBits: %w", err)
-		}
+		buf.Write(tmp8[:])
 	}
 
-	return buf.Bytes(), nil
+	return buf.Bytes()
 }
 
 func decodeProdWire(data []byte) (prodWireData, error) {

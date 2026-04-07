@@ -697,8 +697,14 @@ func TestSerialization_IntegrationWithQJL(t *testing.T) {
 	}
 
 	// Verify the restored BitVector gives the same Hamming distance as the original
-	hd1 := HammingDistance(*original, *original)
-	hd2 := HammingDistance(restored, restored)
+	hd1, err := HammingDistance(*original, *original)
+	if err != nil {
+		t.Fatalf("HammingDistance: %v", err)
+	}
+	hd2, err := HammingDistance(restored, restored)
+	if err != nil {
+		t.Fatalf("HammingDistance: %v", err)
+	}
 	if hd1 != hd2 {
 		t.Errorf("HammingDistance(self) changed after round-trip: %d vs %d", hd1, hd2)
 	}

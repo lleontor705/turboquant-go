@@ -249,7 +249,10 @@ func sketchRanking(query sketch.BitVector, database []*sketch.BitVector, topK in
 			Index: i,
 			// Use negative Hamming distance so that sorting descending
 			// gives us the lowest (most similar) distances first.
-			Score: -float64(sketch.HammingDistance(query, *bv)),
+			Score: func() float64 {
+				d, _ := sketch.HammingDistance(query, *bv)
+				return -float64(d)
+			}(),
 		}
 	}
 

@@ -10,7 +10,10 @@ import (
 
 func TestHammingDistance_Identical(t *testing.T) {
 	bv := BitVector{Bits: []uint64{0xAAAAAAAAAAAAAAAA, 0x5555555555555555}, Dim: 128}
-	got := HammingDistance(bv, bv)
+	got, err := HammingDistance(bv, bv)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
 	if got != 0 {
 		t.Errorf("HammingDistance(identical) = %d, want 0", got)
 	}
@@ -19,7 +22,10 @@ func TestHammingDistance_Identical(t *testing.T) {
 func TestHammingDistance_Complementary(t *testing.T) {
 	a := BitVector{Bits: []uint64{0x0000000000000000}, Dim: 64}
 	b := BitVector{Bits: []uint64{0xFFFFFFFFFFFFFFFF}, Dim: 64}
-	got := HammingDistance(a, b)
+	got, err := HammingDistance(a, b)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
 	if got != 64 {
 		t.Errorf("HammingDistance(complementary) = %d, want 64", got)
 	}
@@ -28,8 +34,14 @@ func TestHammingDistance_Complementary(t *testing.T) {
 func TestHammingDistance_Symmetry(t *testing.T) {
 	a := BitVector{Bits: []uint64{0x0F0F0F0F0F0F0F0F, 0xF0F0F0F0F0F0F0F0}, Dim: 128}
 	b := BitVector{Bits: []uint64{0xFF00FF00FF00FF00, 0x00FF00FF00FF00FF}, Dim: 128}
-	ab := HammingDistance(a, b)
-	ba := HammingDistance(b, a)
+	ab, err := HammingDistance(a, b)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	ba, err := HammingDistance(b, a)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
 	if ab != ba {
 		t.Errorf("HammingDistance not symmetric: a,b=%d, b,a=%d", ab, ba)
 	}
@@ -38,13 +50,10 @@ func TestHammingDistance_Symmetry(t *testing.T) {
 func TestHammingDistance_Mismatch(t *testing.T) {
 	a := BitVector{Bits: []uint64{0}, Dim: 64}
 	b := BitVector{Bits: []uint64{0, 0}, Dim: 128}
-
-	defer func() {
-		if r := recover(); r == nil {
-			t.Error("HammingDistance expected panic on dimension mismatch")
-		}
-	}()
-	HammingDistance(a, b)
+	_, err := HammingDistance(a, b)
+	if err == nil {
+		t.Error("HammingDistance expected error on dimension mismatch")
+	}
 }
 
 // --- HammingDistanceSafe ---
@@ -212,7 +221,7 @@ func BenchmarkHammingDistance(b *testing.B) {
 
 		b.Run(bm.name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				HammingDistance(a, bv)
+				HammingDistance(a, bv) //nolint:errcheck
 			}
 		})
 	}

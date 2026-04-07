@@ -69,47 +69,27 @@ type CompressedVector struct {
 //	[version:1B] [dim:uint32] [min:float64] [max:float64] [bitsPer:uint32] [data_len:uint32] [data:bytes]
 func (cv CompressedVector) MarshalBinary() ([]byte, error) {
 	var buf bytes.Buffer
-
-	// Version byte.
-	if err := serial.WriteVersion(&buf); err != nil {
-		return nil, fmt.Errorf("quantize: marshal version: %w", err)
-	}
-
 	var u32 [4]byte
 	var u64 [8]byte
 
-	// Dim as uint32.
+	// bytes.Buffer.Write/WriteByte never return errors, so we skip error checks.
+	buf.WriteByte(serial.Version)
+
 	binary.LittleEndian.PutUint32(u32[:], uint32(cv.Dim))
-	if _, err := buf.Write(u32[:]); err != nil {
-		return nil, fmt.Errorf("quantize: marshal dim: %w", err)
-	}
+	buf.Write(u32[:])
 
-	// Min as float64.
 	binary.LittleEndian.PutUint64(u64[:], math.Float64bits(cv.Min))
-	if _, err := buf.Write(u64[:]); err != nil {
-		return nil, fmt.Errorf("quantize: marshal min: %w", err)
-	}
+	buf.Write(u64[:])
 
-	// Max as float64.
 	binary.LittleEndian.PutUint64(u64[:], math.Float64bits(cv.Max))
-	if _, err := buf.Write(u64[:]); err != nil {
-		return nil, fmt.Errorf("quantize: marshal max: %w", err)
-	}
+	buf.Write(u64[:])
 
-	// BitsPer as uint32.
 	binary.LittleEndian.PutUint32(u32[:], uint32(cv.BitsPer))
-	if _, err := buf.Write(u32[:]); err != nil {
-		return nil, fmt.Errorf("quantize: marshal bitsPer: %w", err)
-	}
+	buf.Write(u32[:])
 
-	// Data with uint32 length prefix.
 	binary.LittleEndian.PutUint32(u32[:], uint32(len(cv.Data)))
-	if _, err := buf.Write(u32[:]); err != nil {
-		return nil, fmt.Errorf("quantize: marshal data length: %w", err)
-	}
-	if _, err := buf.Write(cv.Data); err != nil {
-		return nil, fmt.Errorf("quantize: marshal data: %w", err)
-	}
+	buf.Write(u32[:])
+	buf.Write(cv.Data)
 
 	return buf.Bytes(), nil
 }

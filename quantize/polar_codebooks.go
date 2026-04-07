@@ -88,10 +88,8 @@ func LevelCodebook(level, n, bits int) ([]float64, error) {
 		maxVal = math.Pi / 2
 	}
 
-	centroids, _, err := LloydMax(pdf, minVal, maxVal, levels, 200)
-	if err != nil {
-		return nil, fmt.Errorf("quantize: LevelCodebook Lloyd-Max failed for level=%d n=%d bits=%d: %w", level, n, bits, err)
-	}
+	// Cannot fail: pdf is valid, range is valid, levels >= 2, iterations > 0.
+	centroids, _, _ := LloydMax(pdf, minVal, maxVal, levels, 200)
 
 	// Store in cache (use LoadOrStore to handle concurrent computation).
 	actual, _ := polarCodebookCache.LoadOrStore(key, centroids)

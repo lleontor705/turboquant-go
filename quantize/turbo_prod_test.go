@@ -158,7 +158,7 @@ func TestTurboProd_ResidualComputation(t *testing.T) {
 		vec[i] = rng.NormFloat64()
 	}
 	// Normalize to unit norm.
-	normalizeUnit(vec)
+	normalizeInPlace(vec)
 
 	// Manually compute expected residual norm (scaled by original norm).
 	mseCV, err := tpq.mseQuant.Quantize(vec)
@@ -317,7 +317,7 @@ func TestTurboProd_IPAccuracy(t *testing.T) {
 		for j := range y {
 			y[j] += rng.NormFloat64() * 0.1
 		}
-		normalizeUnit(y)
+		normalizeInPlace(y)
 
 		// True IP.
 		trueIP := 0.0
@@ -440,8 +440,8 @@ func TestTurboProd_Concurrent(t *testing.T) {
 				x[j] = localRng.NormFloat64()
 				y[j] = localRng.NormFloat64()
 			}
-			normalizeUnit(x)
-			normalizeUnit(y)
+			normalizeInPlace(x)
+			normalizeInPlace(y)
 
 			cv, err := tpq.Quantize(x)
 			if err != nil {
@@ -657,8 +657,8 @@ func TestTurboProd_MultipleBitWidths(t *testing.T) {
 // Helper functions
 // ---------------------------------------------------------------------------
 
-// normalizeUnit normalizes a vector to unit length in-place.
-func normalizeUnit(v []float64) {
+// normalizeInPlace normalizes a vector to unit length in-place.
+func normalizeInPlace(v []float64) {
 	var norm float64
 	for _, x := range v {
 		norm += x * x
